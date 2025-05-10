@@ -5,8 +5,8 @@
 #include "qubit.h"
 
 using namespace std;
-using namespace bra;
-using namespace ket;
+using namespace qb;
+using namespace vu;
 
 #define HALF_SQRT2 (sqrt(2) / 2)
 
@@ -32,71 +32,57 @@ const float Bra::norm(void) const
 
 const Ket Bra::conj(void) const
 {
+    return Ket(vu::conj(states()));
+}
+
+const Bra Bra::base(const size_t value, const size_t size)
+{
+    const size_t n = 1 << size;
     vector<complex<float>> result;
-    for (complex<float> s : states())
+    for (size_t i = 0; i < n; i++)
     {
-        auto sum = std::conj(s);
-        result.insert(result.end(), sum);
+        result.insert(result.end(), i == value ? 1.0f : 0.0f);
     }
-    return Ket(result);
+    return Bra(result);
 }
 
 const Bra operator+(const Bra &a, const Bra &b)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = a.state(i) + b.state(i);
-        result.insert(result.end(), sum);
-    }
-    return Bra(result);
+    return Bra(a.states() + b.states());
 }
 
 const Bra operator-(const Bra &a, const Bra &b)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = a.state(i) - b.state(i);
-        result.insert(result.end(), sum);
-    }
-    return Bra(result);
+    return Bra(a.states() - b.states());
+}
+
+const Bra operator*(const Bra &a, const Bra &b)
+{
+    return Bra(a.states() * b.states());
 }
 
 const Bra operator-(const Bra &a)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = -a.state(i);
-        result.insert(result.end(), sum);
-    }
-    return Bra(result);
+    return Bra(-a.states());
 }
 
 const Bra operator*(const Bra &a, const complex<float> &lambda)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = a.state(i) * lambda;
-        result.insert(result.end(), sum);
-    }
-    return Bra(result);
+    return Bra(lambda * a.states());
+}
+
+const Bra operator*(const complex<float> &lambda, const Bra &a)
+{
+    return Bra(lambda * a.states());
 }
 
 const complex<float> operator*(const Bra &a, const Ket &b)
 {
-    complex<float> result(0);
+    complex<float> result;
     const size_t n = a.size();
     for (size_t i = 0; i < n; i++)
     {
-        auto sum = a.state(i) * b.state(i);
-        result += sum;
+        result += a.state(i) * b.state(i);
     }
     return result;
 }
@@ -120,11 +106,9 @@ ostream &operator<<(ostream &os, const Bra &a)
     return os;
 }
 
-const Bra operator*(const complex<float> &lambda, const Bra &a) { return a * lambda; }
-
-const Bra bra::zero({conj(complex<float>(1)), conj(complex<float>(0))});
-const Bra bra::one({conj(complex<float>(0)), conj(complex<float>(1))});
-const Bra bra::i({conj(complex<float>(HALF_SQRT2)), conj(complex<float>(0, HALF_SQRT2))});
-const Bra bra::minus_i({conj(complex<float>(HALF_SQRT2)), conj(complex<float>(0, -HALF_SQRT2))});
-const Bra bra::plus({conj(complex<float>(HALF_SQRT2)), conj(complex<float>(HALF_SQRT2))});
-const Bra bra::minus({complex<float>(HALF_SQRT2), -complex<float>(HALF_SQRT2)});
+const Bra Bra::zero({std::conj(complex<float>(1)), std::conj(complex<float>(0))});
+const Bra Bra::one({std::conj(complex<float>(0)), std::conj(complex<float>(1))});
+const Bra Bra::i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, HALF_SQRT2))});
+const Bra Bra::minus_i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, -HALF_SQRT2))});
+const Bra Bra::plus({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(HALF_SQRT2))});
+const Bra Bra::minus({complex<float>(HALF_SQRT2), -complex<float>(HALF_SQRT2)});

@@ -5,8 +5,8 @@
 #include "qubit.h"
 
 using namespace std;
-using namespace ket;
-using namespace bra;
+using namespace qb;
+using namespace vu;
 
 Ket::Ket(const vector<complex<float>> &states)
 {
@@ -35,64 +35,40 @@ const float Ket::norm(void) const
 
 const Bra Ket::conj(void) const
 {
-    vector<complex<float>> result;
-    for (complex<float> s : states())
-    {
-        auto sum = std::conj(s);
-        result.insert(result.end(), sum);
-    }
-    return Bra(result);
+    return Bra(vu::conj(states()));
 }
 
 const Ket operator+(const Ket &a, const Ket &b)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = a.state(i) + b.state(i);
-        result.insert(result.end(), sum);
-    }
-    return Ket(result);
+    return Ket(a.states() + b.states());
 }
 
 const Ket operator-(const Ket &a, const Ket &b)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = a.state(i) - b.state(i);
-        result.insert(result.end(), sum);
-    }
-    return Ket(result);
+    return Ket(a.states() - b.states());
+}
+
+const Ket operator*(const Ket &a, const Ket &b)
+{
+    return Ket(a.states() * b.states());
 }
 
 const Ket operator-(const Ket &a)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = -a.state(i);
-        result.insert(result.end(), sum);
-    }
-    return Ket(result);
+    return Ket(-a.states());
 }
 
 const Ket operator*(const Ket &a, const complex<float> &lambda)
 {
-    vector<complex<float>> result;
-    const size_t n = a.size();
-    for (size_t i = 0; i < n; i++)
-    {
-        auto sum = a.state(i) * lambda;
-        result.insert(result.end(), sum);
-    }
-    return Ket(result);
+    return Ket(lambda * a.states());
 }
 
-const Ket ket::base(const size_t value, const size_t size)
+const Ket operator*(const complex<float> &lambda, const Ket &a)
+{
+    return Ket(lambda * a.states());
+}
+
+const Ket Ket::base(const size_t value, const size_t size)
 {
     const size_t n = 1 << size;
     vector<complex<float>> result;
@@ -122,11 +98,9 @@ ostream &operator<<(ostream &os, const Ket &ket)
     return os;
 }
 
-const Ket operator*(const complex<float> &lambda, const Ket &a) { return a * lambda; }
-
-const Ket ket::zero({complex<float>(1), complex<float>(0)});
-const Ket ket::one({complex<float>(0), complex<float>(1)});
-const Ket ket::i({complex<float>(sqrt(2) / 2), complex<float>(0, sqrt(2) / 2)});
-const Ket ket::minus_i({complex<float>(sqrt(2) / 2), -complex<float>(0, sqrt(2) / 2)});
-const Ket ket::plus({complex<float>(sqrt(2) / 2), complex<float>(sqrt(2) / 2)});
-const Ket ket::minus({complex<float>(sqrt(2) / 2), -complex<float>(sqrt(2) / 2)});
+const Ket Ket::zero({complex<float>(1), complex<float>(0)});
+const Ket Ket::one({complex<float>(0), complex<float>(1)});
+const Ket Ket::i({complex<float>(sqrt(2) / 2), complex<float>(0, sqrt(2) / 2)});
+const Ket Ket::minus_i({complex<float>(sqrt(2) / 2), -complex<float>(0, sqrt(2) / 2)});
+const Ket Ket::plus({complex<float>(sqrt(2) / 2), complex<float>(sqrt(2) / 2)});
+const Ket Ket::minus({complex<float>(sqrt(2) / 2), -complex<float>(sqrt(2) / 2)});

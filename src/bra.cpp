@@ -10,20 +10,10 @@ using namespace vu;
 
 #define HALF_SQRT2 (sqrt(2) / 2)
 
-Bra::Bra(const vector<complex<float>> &states)
-{
-    _states = new vector<complex<float>>(states);
-}
-
-Bra::~Bra()
-{
-    delete _states;
-}
-
 const float Bra::norm(void) const
 {
-    auto tot = 0.0;
-    for (auto s : *_states)
+    float tot = 0;
+    for (auto s : _states)
     {
         tot += std::norm(s);
     }
@@ -39,12 +29,17 @@ const Bra Bra::base(const size_t value, const size_t size)
 {
     const size_t n = 1 << size;
     vector<complex<float>> result;
-    for (size_t i = 0; i < n; i++)
-    {
-        result.insert(result.end(), i == value ? 1.0f : 0.0f);
-    }
+    result.assign(n, 0);
+    result[value] = 1;
     return Bra(result);
 }
+
+const Bra Bra::zero({std::conj(complex<float>(1)), std::conj(complex<float>(0))});
+const Bra Bra::one({std::conj(complex<float>(0)), std::conj(complex<float>(1))});
+const Bra Bra::i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, HALF_SQRT2))});
+const Bra Bra::minus_i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, -HALF_SQRT2))});
+const Bra Bra::plus({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(HALF_SQRT2))});
+const Bra Bra::minus({complex<float>(HALF_SQRT2), -complex<float>(HALF_SQRT2)});
 
 const Bra operator+(const Bra &a, const Bra &b)
 {
@@ -78,7 +73,7 @@ const Bra operator*(const complex<float> &lambda, const Bra &a)
 
 const complex<float> operator*(const Bra &a, const Ket &b)
 {
-    complex<float> result;
+    complex<float> result(0);
     const size_t n = a.size();
     for (size_t i = 0; i < n; i++)
     {
@@ -105,10 +100,3 @@ ostream &operator<<(ostream &os, const Bra &a)
     }
     return os;
 }
-
-const Bra Bra::zero({std::conj(complex<float>(1)), std::conj(complex<float>(0))});
-const Bra Bra::one({std::conj(complex<float>(0)), std::conj(complex<float>(1))});
-const Bra Bra::i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, HALF_SQRT2))});
-const Bra Bra::minus_i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, -HALF_SQRT2))});
-const Bra Bra::plus({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(HALF_SQRT2))});
-const Bra Bra::minus({complex<float>(HALF_SQRT2), -complex<float>(HALF_SQRT2)});

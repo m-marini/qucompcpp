@@ -27,7 +27,7 @@ namespace qb
         /**
          * Identiy matrix for single qubit
          */
-        static const Matrix identity;
+        static const Matrix i;
         /**
          * H matrix (Hadamard)
          */
@@ -124,7 +124,12 @@ namespace qb
          *
          * @param permutation the target mapping
          */
-        static const Matrix permute(const std::vector<size_t> permutation);
+        static const Matrix permute(const std::vector<size_t> &permutation);
+
+        /**
+         * Returns the identity matrix of n states
+         */
+        static const Matrix identity(const size_t n);
 
         /**
          * Creates the matrix
@@ -132,8 +137,7 @@ namespace qb
          * @param numCols the number of colums
          * @param cells the cells
          */
-        Matrix(const size_t numRows, const size_t numCols, const vu::ComplexVect cells);
-        ~Matrix();
+        Matrix(const size_t numRows, const size_t numCols, const vu::ComplexVect &cells);
 
         /**
          * Returns the number of rows
@@ -148,20 +152,25 @@ namespace qb
         /**
          * Returns the cells
          */
-        const vu::ComplexVect &cells() const { return *_cells; }
+        const vu::ComplexVect &cells() const { return _cells; }
 
         /**
          * Returns the cell value
          */
         const std::complex<float> &at(const size_t i, const size_t j) const;
 
+        /**
+         * Assign value of onother matrix
+         */
+        Matrix &operator=(const Matrix &a);
+
     private:
-        const size_t _numRows;
-        const size_t _numCols;
-        const vu::ComplexVect *_cells;
+        size_t _numRows;
+        size_t _numCols;
+        vu::ComplexVect _cells;
 
         void validateIndices(const size_t i, const size_t j) const;
-        const std::complex<float> &unsafeAt(const size_t i, const size_t j) const { return (*_cells)[unsafeIndexOf(i, j)]; }
+        const std::complex<float> &unsafeAt(const size_t i, const size_t j) const { return (_cells)[unsafeIndexOf(i, j)]; }
         const size_t unsafeIndexOf(const size_t i, const size_t j) const { return indexOf(_numCols, i, j); }
     };
 
@@ -209,10 +218,9 @@ namespace qb
          * Construct the ket
          * @param states the states
          */
-        Ket(const vu::ComplexVect &states);
-        Ket(const Ket &ket);
+        Ket(const vu::ComplexVect &states) : _states(states) {}
 
-        ~Ket();
+        Ket(const Ket &ket) : _states(ket._states) {}
 
         /**
          * Returns the conjugate
@@ -222,30 +230,40 @@ namespace qb
         /**
          * Returns the number of states
          */
-        const size_t size(void) const { return _states->size(); }
+        const size_t size(void) const { return _states.size(); }
 
         /**
          * Returns the states
          */
-        const vu::ComplexVect &states(void) const { return *_states; }
+        const vu::ComplexVect &states(void) const { return _states; }
 
         /**
          * Returns the value of a state
          * @param i the state index
          */
-        const std::complex<float> state(const size_t i) const { return (*_states)[i]; }
+        const std::complex<float> &state(const size_t i) const { return _states.at(i); }
+
+        /**
+         * Returns the number of bits
+         */
+        const size_t numBits(void) const;
 
         /**
          * Returns the square of module
          */
         const float norm(void) const;
 
+        /**
+         * Returns the states amplitude of a bits
+         */
+        const float bitProb(const size_t i) const;
+
     private:
-        const vu::ComplexVect *_states;
+        const vu::ComplexVect _states;
     };
 
     /**
-     * Defines the Ket
+     * Defines the Bra
      */
     class Bra
     {
@@ -285,10 +303,8 @@ namespace qb
         /**
          * Constructor
          */
-        Bra(const vu::ComplexVect &states);
-        Bra(const Bra &bra);
-
-        ~Bra();
+        Bra(const vu::ComplexVect &states) : _states(states) {}
+        Bra(const Bra &bra) : _states(bra._states) {}
 
         /**
          * Returns the square of module
@@ -303,20 +319,20 @@ namespace qb
         /**
          * Returns the number of states
          */
-        const size_t size(void) const { return _states->size(); }
+        const size_t size(void) const { return _states.size(); }
 
         /**
          * Returns the states
          */
-        const vu::ComplexVect &states(void) const { return *_states; }
+        const vu::ComplexVect &states(void) const { return _states; }
 
         /**
          * Returns the value of a state
          */
-        const std::complex<float> state(const size_t i) const { return (*_states)[i]; }
+        const std::complex<float> &state(const size_t i) const { return _states.at(i); }
 
     private:
-        const vu::ComplexVect *_states;
+        const vu::ComplexVect _states;
     };
 
     /**

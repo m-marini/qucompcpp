@@ -13,6 +13,7 @@ const ComplexVect vu::operator+(const ComplexVect &a, const ComplexVect &b)
                 .str());
     }
     ComplexVect result;
+    result.reserve(n);
     for (size_t i = 0; i < n; i++)
     {
         result.insert(result.end(), a.at(i) + b.at(i));
@@ -30,6 +31,7 @@ const ComplexVect vu::operator-(const ComplexVect &a, const ComplexVect &b)
                 .str());
     }
     ComplexVect result;
+    result.reserve(n);
     for (size_t i = 0; i < n; i++)
     {
         result.insert(result.end(), a.at(i) - b.at(i));
@@ -41,6 +43,7 @@ const ComplexVect vu::operator-(const ComplexVect &a)
 {
     const size_t n = a.size();
     ComplexVect result;
+    result.reserve(n);
     for (complex<float> s : a)
     {
         result.insert(result.end(), -s);
@@ -52,6 +55,7 @@ const ComplexVect vu::operator*(const complex<float> &lambda, const ComplexVect 
 {
     const size_t n = a.size();
     ComplexVect result;
+    result.reserve(n);
     for (complex<float> s : a)
     {
         result.insert(result.end(), lambda * s);
@@ -63,6 +67,7 @@ const ComplexVect vu::conj(const ComplexVect &a)
 {
     const size_t n = a.size();
     ComplexVect result;
+    result.reserve(n);
     for (complex<float> s : a)
     {
         result.insert(result.end(), conj(s));
@@ -73,6 +78,7 @@ const ComplexVect vu::conj(const ComplexVect &a)
 const ComplexVect vu::operator*(const ComplexVect &a, const ComplexVect &b)
 {
     ComplexVect result;
+    result.reserve(a.size() * b.size());
     for (complex<float> va : a)
     {
         for (complex<float> vb : b)

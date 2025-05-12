@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <optional>
 
 #include "qubit.h"
 
@@ -99,6 +100,14 @@ namespace qg
         QuGate(const std::string &id, const indices_t &indices, const qb::Matrix &matrix) : _id(id), _indices(indices), _matrix(matrix) {}
         QuGate(const QuGate &gate) : _id(gate._id), _indices(gate._indices), _matrix(gate._matrix) {}
 
+        QuGate &operator=(const QuGate &gate)
+        {
+            _id = gate._id;
+            _indices = gate._indices;
+            _matrix = gate._matrix;
+            return *this;
+        }
+
         /**
          * Returns the gate id
          */
@@ -127,24 +136,24 @@ namespace qg
         const size_t maxIndices(void) const;
 
     private:
-        const std::string _id;
-        const indices_t _indices;
-        const qb::Matrix _matrix;
+        std::string _id;
+        indices_t _indices;
+        qb::Matrix _matrix;
     };
 
-    typedef const std::vector<QuGate> gates_t;
+    typedef std::vector<QuGate> gates_t;
 
     /**
      * Returns the matrix of circuit composed by the gates
      * @param gates the gates
      */
-    extern const qb::Matrix buildCircuit(gates_t &gates);
+    extern const qb::Matrix buildCircuit(const gates_t &gates);
 
     /**
      * Returns the qubits number of circuit composed by the gates
      * @param gates the gates
      */
-    extern const size_t numQuBits(gates_t &gates);
+    extern const size_t numQuBits(const gates_t &gates);
 }
 
 std::ostream &operator<<(std::ostream &os, const qg::QuGate &gate);

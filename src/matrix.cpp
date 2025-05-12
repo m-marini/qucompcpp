@@ -165,7 +165,7 @@ const Matrix Matrix::cnot(permute({0, 1, 3, 2}));
 const Matrix Matrix::ccnot(permute({0, 1, 2, 3, 4, 5, 7, 6}));
 const Matrix Matrix::h(2, 2, {HALF_SQRT2, HALF_SQRT2, HALF_SQRT2, -HALF_SQRT2});
 const Matrix Matrix::s(2, 2, {1, 0, 0, -1if});
-const Matrix Matrix::t(2, 2, {0, 0, 0, complex<float>(HALF_SQRT2, HALF_SQRT2)});
+const Matrix Matrix::t(2, 2, {1, 0, 0, complex<float>(HALF_SQRT2, HALF_SQRT2)});
 
 ostream &operator<<(ostream &os, const Matrix &a)
 {

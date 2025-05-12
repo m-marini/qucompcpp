@@ -4,6 +4,8 @@
 #include <cmath>
 #include "qubit.h"
 
+#define STATE_PER_LINE 4
+
 using namespace std;
 using namespace qb;
 using namespace vu;
@@ -103,13 +105,18 @@ ostream &operator<<(ostream &os, const Ket &ket)
     const size_t n = ket.size();
     for (size_t i = 0; i < n; i++)
     {
+        const bool newLine = i % STATE_PER_LINE == 0 && i > 0;
+        if (newLine)
+        {
+            os << endl;
+        }
         if (isFirst)
         {
             isFirst = false;
         }
         else
         {
-            os << " + ";
+            os << (newLine ? "+ " : " + ");
         }
         os << ket.state(i) << " |" << i << ">";
     }

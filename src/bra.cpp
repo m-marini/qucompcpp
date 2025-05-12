@@ -100,3 +100,4 @@ ostream &operator<<(ostream &os, const Bra &a)
     }
     return os;
 }
+

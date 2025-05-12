@@ -1,4 +1,7 @@
 #include <iostream>
+#include <regex>
+#include <functional>
+#include <map>
 
 #include "qugates.h"
 
@@ -228,7 +231,7 @@ const size_t QuGate::maxIndices(void) const
     return result;
 }
 
-const size_t qg::numQuBits(const std::vector<QuGate> &gates)
+const size_t qg::numQuBits(const gates_t &gates)
 {
     size_t n = 0;
     for (auto gate : gates)

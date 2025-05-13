@@ -1,0 +1,7 @@
+#ifndef _version_h_
+#define _version_h_
+
+#define DESCRIPTION ("@PROJECT_DESCRIPTION@")
+#define VERSION ("@PROJECT_VERSION_MAJOR@.@qucomp_VERSION_MINOR@.@qucomp_VERSION_PATCH@")
+
+#endif

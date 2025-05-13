@@ -76,19 +76,19 @@ namespace qg
         /**
          * Returns the cnot gate
          *
-         * @param control the control bit index
          * @param data the data bit index
+         * @param control the control bit index
          */
-        static const QuGate cnot(const size_t control, const size_t data);
+        static const QuGate cnot(const size_t data, const size_t control);
 
         /**
          * Returns the cnot gate
          *
+         * @param data the data bit index
          * @param c0 the first control bit index
          * @param c1 the second control bit index
-         * @param data the data bit index
          */
-        static const QuGate ccnot(const size_t c0, const size_t c1, const size_t data);
+        static const QuGate ccnot(const size_t data, const size_t c0, const size_t c1);
 
         /**
          * Creates the gates

@@ -180,14 +180,14 @@ const QuGate QuGate::swap(const size_t a, const size_t b)
     return QuGate("swap", {a, b}, Matrix::swap);
 }
 
-const QuGate QuGate::cnot(const size_t control, const size_t data)
+const QuGate QuGate::cnot(const size_t data, const size_t control)
 {
-    return QuGate("cnot", {control, data}, Matrix::ccnot);
+    return QuGate("cnot", {data, control}, Matrix::cnot);
 }
 
-const QuGate QuGate::ccnot(const size_t c0, const size_t c1, const size_t data)
+const QuGate QuGate::ccnot(const size_t data, const size_t c0, const size_t c1)
 {
-    return QuGate("ccnot", {c0, c1, data}, Matrix::ccnot);
+    return QuGate("ccnot", {data, c0, c1}, Matrix::ccnot);
 }
 
 const qb::Matrix QuGate::build(const size_t numBits) const

@@ -4,7 +4,7 @@
 #include <cmath>
 #include "qubit.h"
 
-#define STATE_PER_LINE 4
+#define STATE_PER_LINE 8
 
 using namespace std;
 using namespace qb;

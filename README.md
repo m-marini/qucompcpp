@@ -1,5 +1,10 @@
+**Qucompcpp** is a C++ quantum computing emulation.
 
-# Dependenies installation
+The documentaion is in the [Wiki section](https://github.com/m-marini/qucompcpp/wiki).
+
+The executable file for linux are available in [[Downloads|Downloads]]
+
+## Dependencies installation
 
 Install `cmake`
 
@@ -8,7 +13,7 @@ sudo apt update
 sudo apt install cmake
 ```
 
-# Build
+## Build
 
 Create and move to the `build` directory.
 To create the building system run the `cmake` with source directory.
@@ -21,7 +26,7 @@ cmake ../src
 cmake --build .
 ```
 
-# Run the executable
+## Run the executable
 
 The `qucomp` executable load the qunatum circuit from command line or from standard input.
 
@@ -33,7 +38,7 @@ or
 ./qucomp "ccnot(3,0,1) cnot(1,0) ccnot(3,1,2) cnot(2,1) cnot(1,0)"
 ```
 
-# Quantum Gates
+## Quantum Gates
 
 The syntax of quantum circuit is a list of gates.
 The available gates are:
@@ -46,8 +51,8 @@ The available gates are:
 - `s(<bit>)`: the s gate for the given bit
 - `t(<bit>)`: the t gate for the given bit
 - `swap(<bit1>, <bit2>)`: the swap gate
-- `cnot(<control_bit1>, <data_bit>)`: the control not gate
-- `ccnot(<control_bit1>, <data_bit>)`: the control-control not (Toffoli) gate 
+- `cnot(<data> <control_bit1>)`: the control not gate
+- `ccnot(<data_bit>, <control_bit1>, <control_bit2>)`: the control-control not (Toffoli) gate 
 
 E.g.
 The circuit half adder
@@ -71,4 +76,6 @@ cnot(2,1)
 cnot(1,0)
 ```
 
+---
 
+_Release 0.1.0_

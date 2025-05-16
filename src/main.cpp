@@ -38,7 +38,7 @@ static void usage(const char *prog)
           << "  -h --help               Print usage" << endl
           << "  -v --version            Print version" << endl
           << endl
-          << "If no file nor gates are defined the stdin is used to load the gates."
+          << "The stdin is used to load the gates if no file nor gates are defined."
           << endl;
 }
 

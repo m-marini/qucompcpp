@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <map>
 
 #include "parser.h"
@@ -7,6 +8,7 @@ using namespace std;
 using namespace qg;
 using namespace qp;
 
+/*
 const gates_t qp::parseArgs(const int argc, const char **argv)
 {
     int counter = 1;
@@ -22,44 +24,18 @@ const gates_t qp::parseArgs(const int argc, const char **argv)
     return Parser(f).parse();
 }
 
+*/
 const gates_t qp::parseStream(istream &in)
 {
-    function<const optional<string>(void)> f = [&in](void)
-    {
-        char bfr[256];
-        if (in.getline(bfr, sizeof(bfr)))
-        {
-            return optional(string(bfr));
-        }
-        return (const optional<string>)nullopt;
-    };
-
-    return Parser(f).parse();
+    Tokenizer t(in);
+    Parser p(t);
+    return p.parse();
 }
 
 const gates_t qp::parseString(const std::string &text)
 {
-    bool isFirstRead = true;
-    function<const optional<string>(void)> f = [&isFirstRead, &text](void)
-    {
-        if (isFirstRead)
-        {
-            isFirstRead = false;
-            return optional(text);
-        }
-        return (const optional<string>)nullopt;
-    };
-
-    return Parser(f).parse();
-}
-
-Parser::Parser(std::function<const std::optional<std::string>(void)> readLine) : _readLine(readLine),
-                                                                                 _currentLine(std::optional(std::string())),
-                                                                                 _lineNumber(0),
-                                                                                 _currentPos(0)
-{
-    skipChar();
-    consumeToken();
+    auto is = istringstream(text);
+    return parseStream(is);
 }
 
 /**
@@ -90,9 +66,9 @@ const gates_t Parser::parse(void)
     {
         result.insert(result.end(), gateOpt.value());
     } while (gateOpt = parseGateOpt());
-    if (peekToken())
+    if (_tokenizer.currentToken())
     {
-        reportError("Unexpected token " + peekToken().value());
+        reportError("Unexpected token " + _tokenizer.currentToken().value_or("EOF"));
     }
     return result;
 }
@@ -128,14 +104,14 @@ const optional<QuGate> Parser::parseUnaryGate(void)
         {"y", QuGate::y},
         {"z", QuGate::z}};
 
-    auto &tokOpt = peekToken();
+    auto &tokOpt = _tokenizer.currentToken();
     if (tokOpt)
     {
         auto gateId = tokOpt.value();
         if (map1bit.count(gateId) > 0)
         {
             auto builder = map1bit[gateId];
-            consumeToken();
+            _tokenizer.popToken();
             requiredToken("(");
             const int bit = parseNumber();
             requiredToken(")");
@@ -155,14 +131,14 @@ const optional<QuGate> Parser::parseBinaryGate(void)
         {"swap", QuGate::swap},
         {"cnot", QuGate::cnot}};
 
-    auto tokOpt = peekToken();
+    auto tokOpt = _tokenizer.currentToken();
     if (tokOpt)
     {
         auto gateId = tokOpt.value();
         if (map2bit.count(gateId) > 0)
         {
             auto builder = map2bit[gateId];
-            consumeToken();
+            _tokenizer.popToken();
             requiredToken("(");
             const int bit0 = parseNumber();
             requiredToken(",");
@@ -183,14 +159,14 @@ const optional<QuGate> Parser::parseTrinaryGate(void)
     static map<string, function<QuGate(const size_t, const size_t, const size_t)>> map3bit{
         {"ccnot", QuGate::ccnot}};
 
-    auto tokOpt = peekToken();
+    auto tokOpt = _tokenizer.currentToken();
     if (tokOpt)
     {
         auto gateId = tokOpt.value();
         if (map3bit.count(gateId) > 0)
         {
             auto builder = map3bit[gateId];
-            consumeToken();
+            _tokenizer.popToken();
             requiredToken("(");
             const int bit0 = parseNumber();
             requiredToken(",");
@@ -206,103 +182,32 @@ const optional<QuGate> Parser::parseTrinaryGate(void)
 
 const int Parser::parseNumber(void)
 {
-    auto &tokOpt = peekToken();
+    auto &tokOpt = _tokenizer.currentToken();
     if (!tokOpt || !isdigit(tokOpt.value().at(0)))
     {
         reportError("Expected digit");
     }
     const int result = stoi(tokOpt.value());
-    consumeToken();
+    _tokenizer.popToken();
     return result;
 }
 
 void Parser::reportError(const string &msg) const
 {
-    cerr << _lineNumber << ":" << _currentPos << ": " << msg << endl
-         << "|" << currentText() << endl;
+    string lineNum = to_string(_tokenizer.tokenLineNum());
+    string lineNumGap = string().assign(lineNum.length(), ' ');
+    string skipGap = string().assign(_tokenizer.tokenPos(), '-');
+    cerr << lineNum << ":" << _tokenizer.tokenLine().value_or("") << endl
+         << lineNumGap << ":" << skipGap << "^ " << msg << endl;
     throw invalid_argument(msg);
 }
 
 void Parser::requiredToken(const string &token)
 {
-    auto &tokOpt = peekToken();
+    auto &tokOpt = _tokenizer.currentToken();
     if (!tokOpt || tokOpt.value() != token)
     {
         reportError("Expected " + token);
     }
-    consumeToken();
-}
-
-void Parser::consumeToken(void)
-{
-    skipBlanks();
-    int ch = currentChar();
-    if (ch < 0)
-    {
-        _currentToken = nullopt;
-    }
-    else if (isalpha(ch))
-    {
-        string token;
-        do
-        {
-            token += (char)ch;
-            skipChar();
-        } while (isalnum((ch = currentChar())));
-        _currentToken = optional(token);
-    }
-    else if (isdigit(ch))
-    {
-        string token;
-        do
-        {
-            token += (char)ch;
-            skipChar();
-        } while (isalnum((ch = currentChar())));
-        _currentToken = optional(token);
-    }
-    else
-    {
-        skipChar();
-        string result;
-        result += (char)ch;
-        _currentToken = optional(result);
-    }
-}
-
-const string Parser::currentText() const
-{
-    return _currentLine ? _currentLine.value().substr(0, _currentPos + 1) : "<EOF>";
-}
-
-/**
- * Skips blanks from input
- */
-void Parser::skipBlanks(void)
-{
-    while (isblank(currentChar()))
-    {
-        skipChar();
-    }
-}
-
-/**
- * Skip a character
- */
-void Parser::skipChar(void)
-{
-    if (_currentLine)
-    {
-        // not eof
-        // Increment char pointer
-        _currentPos++;
-        auto line = _currentLine.value();
-        if (_currentPos >= line.size())
-        {
-            // triggered eol: read next line
-            _currentLine = _readLine();
-            _lineNumber++;
-            _currentPos = 0;
-        }
-    }
+    _tokenizer.popToken();
 }

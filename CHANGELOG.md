@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.1] 2025-05-16
+
 ### Added
 
 - Issue [#3](https://github.com/m-marini/qucompcpp/issues/3): Add comment syntax

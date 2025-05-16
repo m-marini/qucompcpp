@@ -33,7 +33,7 @@ The `qucomp` executable load the quantum circuit and print the output state with
 ```
 $ ./qucomp -h
 
-Quantum computing 0.2.0
+Quantum computing 0.2.1
 
 Usage: ./qucomp [options]
 
@@ -43,13 +43,12 @@ Options
   -h --help               Print usage
   -v --version            Print version
 
-If no file nor gates are defined the stdin is used to load the gates.
+The stdin is used to load the gates if no file nor gates are defined.
 ```
 
 ```
-$./qucomp -f ../half_adder 
+$ ./qucomp -f ../qucomp.qg 
 Gates:
-  ccnot(3, 0, 1)
   cnot(1, 0)
   ccnot(3, 1, 2)
   cnot(2, 1)
@@ -65,6 +64,10 @@ Result:
   P(qubit 2)=0
   P(qubit 3)=0
 ```
+
+## Release 0.2.1
+
+- Comment syntax
 
 ## Release 0.2.0
 

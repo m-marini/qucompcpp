@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sstream>
-#include <regex>
 
 #include "qubit.h"
 #include "qugates.h"
@@ -171,4 +170,32 @@ static void testEngine(void)
      cout << endl;
      cout << "I x X = " << endl
           << cross(Matrix::i, Matrix::x) << endl;
+}
+
+void testToken()
+{
+     cout << "testToken()" << endl;
+     istringstream stream(string("   i ( 8) \n") + "a // asdasdasda\n" + "b /* skjadajhsdjksahdkja */ c\n" + "\n");
+     Tokenizer tok(stream);
+     for (int i = 0; !tok.eof(); i++)
+     {
+          cout << "read " << tok.currentToken().value_or("EOF") << endl
+               << "line " << tok.tokenLine().value_or("EOF") << endl
+               << "@" << tok.tokenLineNum() << ":" << tok.tokenPos() << endl;
+          tok.popToken();
+          cout << "pop" << endl
+               << endl;
+     }
+}
+
+void testParser()
+{
+     auto gates = parseString("i(1)\nswap(2,1) /* asdasd*/ h(0)x(0)y(0)z(0)\n\ns(0)t(0)cnot(1,0)ccnot(1,2,3)");
+     cout << endl;
+     cout << "Gates:" << endl;
+     for (const QuGate gate : gates)
+     {
+          cout << gate << endl;
+     }
+     gates = parseString("   ");
 }

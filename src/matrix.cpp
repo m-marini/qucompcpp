@@ -32,7 +32,7 @@ void Matrix::validateIndices(const size_t i, const size_t j) const
     }
 }
 
-const complex<float> &Matrix::at(const size_t i, const size_t j) const
+const complex<double> &Matrix::at(const size_t i, const size_t j) const
 {
     validateIndices(i, j);
     return unsafeAt(i, j);

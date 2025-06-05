@@ -157,7 +157,7 @@ namespace qb
         /**
          * Returns the cell value
          */
-        const std::complex<float> &at(const size_t i, const size_t j) const;
+        const std::complex<double> &at(const size_t i, const size_t j) const;
 
         /**
          * Assign value of onother matrix
@@ -170,7 +170,7 @@ namespace qb
         vu::ComplexVect _cells;
 
         void validateIndices(const size_t i, const size_t j) const;
-        const std::complex<float> &unsafeAt(const size_t i, const size_t j) const { return (_cells)[unsafeIndexOf(i, j)]; }
+        const std::complex<double> &unsafeAt(const size_t i, const size_t j) const { return (_cells)[unsafeIndexOf(i, j)]; }
         const size_t unsafeIndexOf(const size_t i, const size_t j) const { return indexOf(_numCols, i, j); }
     };
 
@@ -241,7 +241,7 @@ namespace qb
          * Returns the value of a state
          * @param i the state index
          */
-        const std::complex<float> &state(const size_t i) const { return _states.at(i); }
+        const std::complex<double> &state(const size_t i) const { return _states.at(i); }
 
         /**
          * Returns the number of bits
@@ -251,12 +251,12 @@ namespace qb
         /**
          * Returns the square of module
          */
-        const float norm(void) const;
+        const double norm(void) const;
 
         /**
          * Returns the states amplitude of a bits
          */
-        const float bitProb(const size_t i) const;
+        const double bitProb(const size_t i) const;
 
     private:
         const vu::ComplexVect _states;
@@ -309,7 +309,7 @@ namespace qb
         /**
          * Returns the square of module
          */
-        const float norm(void) const;
+        const double norm(void) const;
 
         /**
          * Returns the conjugate
@@ -329,7 +329,7 @@ namespace qb
         /**
          * Returns the value of a state
          */
-        const std::complex<float> &state(const size_t i) const { return _states.at(i); }
+        const std::complex<double> &state(const size_t i) const { return _states.at(i); }
 
     private:
         const vu::ComplexVect _states;
@@ -353,17 +353,17 @@ extern const qb::Ket operator-(const qb::Ket &a);
 extern const qb::Ket operator+(const qb::Ket &a, const qb::Ket &b);
 extern const qb::Ket operator-(const qb::Ket &a, const qb::Ket &b);
 extern const qb::Ket operator*(const qb::Ket &a, const qb::Ket &b);
-extern const qb::Ket operator*(const qb::Ket &a, const std::complex<float> &lambda);
-extern const qb::Ket operator*(const std::complex<float> &lambda, const qb::Ket &a);
+extern const qb::Ket operator*(const qb::Ket &a, const std::complex<double> &lambda);
+extern const qb::Ket operator*(const std::complex<double> &lambda, const qb::Ket &a);
 extern std::ostream &operator<<(std::ostream &stream, const qb::Ket &a);
 
 extern const qb::Bra operator-(const qb::Bra &a);
 extern const qb::Bra operator+(const qb::Bra &a, const qb::Bra &b);
 extern const qb::Bra operator-(const qb::Bra &a, const qb::Bra &b);
 extern const qb::Bra operator*(const qb::Bra &a, const qb::Bra &b);
-extern const qb::Bra operator*(const qb::Bra &a, const std::complex<float> &lambda);
-extern const qb::Bra operator*(const std::complex<float> &lambda, const qb::Bra &a);
-extern const std::complex<float> operator*(const qb::Bra &a, const qb::Ket &b);
+extern const qb::Bra operator*(const qb::Bra &a, const std::complex<double> &lambda);
+extern const qb::Bra operator*(const std::complex<double> &lambda, const qb::Bra &a);
+extern const std::complex<double> operator*(const qb::Bra &a, const qb::Ket &b);
 extern std::ostream &operator<<(std::ostream &stream, const qb::Bra &a);
 
 #endif

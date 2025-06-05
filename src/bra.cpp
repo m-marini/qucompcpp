@@ -10,9 +10,9 @@ using namespace vu;
 
 #define HALF_SQRT2 (sqrt(2) / 2)
 
-const float Bra::norm(void) const
+const double Bra::norm(void) const
 {
-    float tot = 0;
+    double tot = 0;
     for (auto s : _states)
     {
         tot += std::norm(s);
@@ -28,18 +28,18 @@ const Ket Bra::conj(void) const
 const Bra Bra::base(const size_t value, const size_t size)
 {
     const size_t n = 1 << size;
-    vector<complex<float>> result;
+    vector<complex<double>> result;
     result.assign(n, 0);
     result[value] = 1;
     return Bra(result);
 }
 
-const Bra Bra::zero({std::conj(complex<float>(1)), std::conj(complex<float>(0))});
-const Bra Bra::one({std::conj(complex<float>(0)), std::conj(complex<float>(1))});
-const Bra Bra::i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, HALF_SQRT2))});
-const Bra Bra::minus_i({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(0, -HALF_SQRT2))});
-const Bra Bra::plus({std::conj(complex<float>(HALF_SQRT2)), std::conj(complex<float>(HALF_SQRT2))});
-const Bra Bra::minus({complex<float>(HALF_SQRT2), -complex<float>(HALF_SQRT2)});
+const Bra Bra::zero({std::conj(complex<double>(1)), std::conj(complex<double>(0))});
+const Bra Bra::one({std::conj(complex<double>(0)), std::conj(complex<double>(1))});
+const Bra Bra::i({std::conj(complex<double>(HALF_SQRT2)), std::conj(complex<double>(0, HALF_SQRT2))});
+const Bra Bra::minus_i({std::conj(complex<double>(HALF_SQRT2)), std::conj(complex<double>(0, -HALF_SQRT2))});
+const Bra Bra::plus({std::conj(complex<double>(HALF_SQRT2)), std::conj(complex<double>(HALF_SQRT2))});
+const Bra Bra::minus({complex<double>(HALF_SQRT2), -complex<double>(HALF_SQRT2)});
 
 const Bra operator+(const Bra &a, const Bra &b)
 {
@@ -61,19 +61,19 @@ const Bra operator-(const Bra &a)
     return Bra(-a.states());
 }
 
-const Bra operator*(const Bra &a, const complex<float> &lambda)
+const Bra operator*(const Bra &a, const complex<double> &lambda)
 {
     return Bra(lambda * a.states());
 }
 
-const Bra operator*(const complex<float> &lambda, const Bra &a)
+const Bra operator*(const complex<double> &lambda, const Bra &a)
 {
     return Bra(lambda * a.states());
 }
 
-const complex<float> operator*(const Bra &a, const Ket &b)
+const complex<double> operator*(const Bra &a, const Ket &b)
 {
-    complex<float> result(0);
+    complex<double> result(0);
     const size_t n = a.size();
     for (size_t i = 0; i < n; i++)
     {

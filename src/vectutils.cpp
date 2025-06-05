@@ -44,19 +44,19 @@ const ComplexVect vu::operator-(const ComplexVect &a)
     const size_t n = a.size();
     ComplexVect result;
     result.reserve(n);
-    for (complex<float> s : a)
+    for (complex<double> s : a)
     {
         result.insert(result.end(), -s);
     }
     return result;
 }
 
-const ComplexVect vu::operator*(const complex<float> &lambda, const ComplexVect &a)
+const ComplexVect vu::operator*(const complex<double> &lambda, const ComplexVect &a)
 {
     const size_t n = a.size();
     ComplexVect result;
     result.reserve(n);
-    for (complex<float> s : a)
+    for (complex<double> s : a)
     {
         result.insert(result.end(), lambda * s);
     }
@@ -68,7 +68,7 @@ const ComplexVect vu::conj(const ComplexVect &a)
     const size_t n = a.size();
     ComplexVect result;
     result.reserve(n);
-    for (complex<float> s : a)
+    for (complex<double> s : a)
     {
         result.insert(result.end(), conj(s));
     }
@@ -79,9 +79,9 @@ const ComplexVect vu::operator*(const ComplexVect &a, const ComplexVect &b)
 {
     ComplexVect result;
     result.reserve(a.size() * b.size());
-    for (complex<float> va : a)
+    for (complex<double> va : a)
     {
-        for (complex<float> vb : b)
+        for (complex<double> vb : b)
         {
             result.insert(result.end(), va * vb);
         }
@@ -101,7 +101,7 @@ ComplexVect &vu::partMul(ComplexVect &d, const size_t dOffset, const size_t numR
         size_t bj = bOffset;
         for (size_t j = 0; j < numCols; j++)
         {
-            complex<float> cell;
+            complex<double> cell;
             size_t aik = ai;
             size_t bkj = bj;
             for (int k = 0; k < aStride; k++)

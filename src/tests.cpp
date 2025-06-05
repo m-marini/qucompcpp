@@ -95,7 +95,7 @@ static void testEngine(void)
 
      cout << endl;
 
-     Ket ket1(vector{complex<float>(sqrt(2) / 2), complex<float>(0.0)});
+     Ket ket1(vector{complex<double>(sqrt(2) / 2), complex<double>(0.0)});
      auto ket2 = ket1 + ket1;
 
      cout << "ket1 = " << ket1 << endl

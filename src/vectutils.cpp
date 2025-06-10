@@ -119,3 +119,14 @@ ComplexVect &vu::partMul(ComplexVect &d, const size_t dOffset, const size_t numR
     }
     return d;
 }
+
+const size_t vu::numBitsByState(const size_t state)
+{
+    int n = 0;
+    size_t s = state;
+    do
+    {
+        n++;
+    } while ((s >>= 1) != 0);
+    return max(n, 1);
+}

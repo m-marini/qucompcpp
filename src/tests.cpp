@@ -4,6 +4,7 @@
 #include "qubit.h"
 #include "qugates.h"
 #include "parser.h"
+#include "matrix.h"
 
 using namespace std;
 using namespace qb;

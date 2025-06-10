@@ -143,4 +143,5 @@ int main(int argc, char **argv)
      {
           cout << "  P(qubit " << i << ")=" << output.bitProb(i) << endl;
      }
+     return 0;
 }

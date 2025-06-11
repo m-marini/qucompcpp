@@ -6,6 +6,8 @@
 #include "tokenizer.h"
 #include "compiler.h"
 #include "qusyntax.h"
+#include "syntaxRules.h"
+
 
 using namespace std;
 using namespace qc;

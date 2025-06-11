@@ -33,9 +33,11 @@ add_executable(qucomp
 
   syntaxRules.cpp
   syntaxBuilder.cpp
-
   qusyntax.cpp
+
+  commands.cpp
   compiler.cpp
+
   processor.cpp
 )
 
@@ -52,9 +54,11 @@ add_executable(
 
   syntaxRules.cpp
   syntaxBuilder.cpp
-  
   qusyntax.cpp
+  
+  commands.cpp
   compiler.cpp
+
   processor.cpp
   matrix1.cpp
   vectutils.cpp

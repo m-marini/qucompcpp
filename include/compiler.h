@@ -2,23 +2,14 @@
 #define _compiler_c_
 
 #include <deque>
-#include <map>
 #include <string>
-#include <functional>
 
-#include "commands.h"
+#include "compilerContext.h"
+#include "syntaxRules.h"
 #include "tokenizer.h"
-#include "syntaxBuilder.h"
 
 namespace qc
 {
-
-    class CompilerContext
-    {
-    public:
-        virtual CompilerContext &pushCommand(NodeCommand *command) = 0;
-        virtual NodeCommand *popCommand(void) = 0;
-    };
 
     class Compiler : public ParseContext, public CompilerContext
     {

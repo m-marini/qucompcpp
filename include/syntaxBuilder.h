@@ -44,7 +44,7 @@ namespace qc
          *
          * @param context the parse context
          */
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const = 0;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const = 0;
 
         /**
          * Binds the rule to dependency rules
@@ -60,14 +60,14 @@ namespace qc
     {
     public:
         EofRule(const std::string &id) : SyntaxRule(id) {}
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const override;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const override;
     };
 
     class TerminalRule : public SyntaxRule
     {
     public:
         TerminalRule(const std::string &id) : SyntaxRule(id) {}
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const override;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const override;
         virtual const bool match(const Token &token) const = 0;
     };
 
@@ -121,7 +121,7 @@ namespace qc
     {
     public:
         EmptyRule(const std::string &id) : SyntaxRule(id) {}
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const override;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const override;
     };
 
     class NonTerminalRule : public SyntaxRule
@@ -150,28 +150,28 @@ namespace qc
     {
     public:
         RequireRule(const std::string &id) : NonTerminalRule(id) {}
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const override;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const override;
     };
 
     class OptRule : public NonTerminalRule
     {
     public:
         OptRule(const std::string &id) : NonTerminalRule(id) {}
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const override;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const override;
     };
 
     class OptionsRule : public NonTerminalRule
     {
     public:
         OptionsRule(const std::string &id) : NonTerminalRule(id) {}
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const override;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const override;
     };
 
     class RepeatRule : public NonTerminalRule
     {
     public:
         RepeatRule(const std::string &id) : NonTerminalRule(id) {}
-        virtual const bool parse(TokenizerIntf &tokenizer, ParseContext &context) const override;
+        virtual const bool parse(TokenProducer &tokenizer, ParseContext &context) const override;
     };
 
     class RuleMap

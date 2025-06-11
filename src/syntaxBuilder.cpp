@@ -3,19 +3,19 @@
 using namespace std;
 using namespace qc;
 
-const bool EofRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
+const bool EofRule::parse(TokenProducer &tokenizer, ParseContext &context) const
 {
     return tokenizer.currentToken().type() == TokenType::eofTokenType;
 }
 
-const bool EmptyRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
+const bool EmptyRule::parse(TokenProducer &tokenizer, ParseContext &context) const
 {
     auto &token = tokenizer.currentToken();
     context.join(token, *this);
     return true;
 }
 
-const bool TerminalRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
+const bool TerminalRule::parse(TokenProducer &tokenizer, ParseContext &context) const
 {
     auto &token = tokenizer.currentToken();
     if (match(token))
@@ -29,7 +29,7 @@ const bool TerminalRule::parse(TokenizerIntf &tokenizer, ParseContext &context) 
     return false;
 }
 
-const bool RequireRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
+const bool RequireRule::parse(TokenProducer &tokenizer, ParseContext &context) const
 {
     Token *ruleToken = tokenizer.currentToken().clone();
 
@@ -48,7 +48,7 @@ const bool RequireRule::parse(TokenizerIntf &tokenizer, ParseContext &context) c
     return true;
 }
 
-const bool OptionsRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
+const bool OptionsRule::parse(TokenProducer &tokenizer, ParseContext &context) const
 {
     Token *ruleToken = tokenizer.currentToken().clone();
 
@@ -66,7 +66,7 @@ const bool OptionsRule::parse(TokenizerIntf &tokenizer, ParseContext &context) c
     return false;
 }
 
-const bool OptRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
+const bool OptRule::parse(TokenProducer &tokenizer, ParseContext &context) const
 {
     const vector<SyntaxRule *> deps = rules();
     const SyntaxRule *cond = deps[0];
@@ -94,7 +94,7 @@ const bool OptRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
     return true;
 }
 
-const bool RepeatRule::parse(TokenizerIntf &tokenizer, ParseContext &context) const
+const bool RepeatRule::parse(TokenProducer &tokenizer, ParseContext &context) const
 {
     const vector<SyntaxRule *> deps = rules();
     const SyntaxRule *cond = deps[0];

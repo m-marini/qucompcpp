@@ -4,19 +4,15 @@
 #include <iostream>
 #include <optional>
 #include <string>
+
 #include "token.h"
+#include "sourceContext.h"
+#include "tokenProducer.h"
 
 namespace qc
 {
-    class TokenizerIntf
-    {
-    public:
-        virtual void popToken(void) = 0;
-        virtual const Token &currentToken(void) const = 0;
-    };
-
     // Parse a stream producing token
-    class Tokenizer : public TokenizerIntf
+    class Tokenizer : public TokenProducer
     {
         std::istream &_stream;
         Token *_currentToken;

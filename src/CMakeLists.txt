@@ -25,9 +25,12 @@ add_executable(qucomp
   parser.cpp
   vectutils.cpp
   qugates.cpp
-  token.cpp
   tokenizer.cpp
+
+  sourceContext.cpp
+  token.cpp
   tokenizer1.cpp
+
   qusyntax.cpp
   compiler.cpp
   processor.cpp
@@ -39,8 +42,11 @@ add_executable(qucomp
 
 add_executable(
   run_tests
+
+  sourceContext.cpp
   token.cpp
   tokenizer1.cpp
+
   syntaxBuilder.cpp
   qusyntax.cpp
   compiler.cpp

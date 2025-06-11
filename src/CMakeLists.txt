@@ -31,10 +31,13 @@ add_executable(qucomp
   token.cpp
   tokenizer1.cpp
 
+  syntaxRules.cpp
+  syntaxBuilder.cpp
+
   qusyntax.cpp
   compiler.cpp
   processor.cpp
-  syntaxBuilder.cpp)
+)
 
  target_include_directories(qucomp PUBLIC "../include" "${PROJECT_BINARY_DIR}")
 
@@ -47,7 +50,9 @@ add_executable(
   token.cpp
   tokenizer1.cpp
 
+  syntaxRules.cpp
   syntaxBuilder.cpp
+  
   qusyntax.cpp
   compiler.cpp
   processor.cpp

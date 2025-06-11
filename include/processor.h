@@ -5,7 +5,7 @@
 #include <map>
 
 #include "values.h"
-#include "token.h"
+#include "processContext.h"
 
 namespace qc
 {
@@ -19,12 +19,6 @@ namespace qc
 
         const std::string &id(void) const { return _id; }
         const int numArgs(void) const { return _numArgs; }
-    };
-
-    class ProcessContext
-    {
-    public:
-        virtual const Value *int2Ket(const SourceContext &source, const Value *arg) = 0;
     };
 
     class Processor : public ProcessContext

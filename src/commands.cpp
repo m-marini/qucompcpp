@@ -6,8 +6,34 @@ using namespace qc;
 using namespace mx;
 
 
+const ListValue *ListCommand::eval(ProcessContext &context) const
+{
+    vector<const Value *> args;
+    for (const NodeCommand *cmd : _commands)
+    {
+        const Value *val = cmd->eval(context);
+        if (val)
+        {
+            args.push_back(val);
+        }
+    }
+    return new ListValue(args);
+}
 
+const IntValue *IntCommand::eval(ProcessContext &context) const
+{
+    return new IntValue(_value);
+}
 
+const ComplexValue *ComplexCommand::eval(ProcessContext &context) const
+{
+    return new ComplexValue(_value);
+}
+
+const MatrixValue *MatrixCommand::eval(ProcessContext &context) const
+{
+    return new MatrixValue(_value);
+}
 
 CompositeCommand::~CompositeCommand()
 {

@@ -3,8 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <optional>
-#include <functional>
 
 #include "vectutils.h"
 

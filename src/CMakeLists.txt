@@ -38,6 +38,7 @@ add_executable(qucomp
   commands.cpp
   compiler.cpp
 
+  values.cpp
   processor.cpp
 )
 
@@ -59,9 +60,12 @@ add_executable(
   commands.cpp
   compiler.cpp
 
+  values.cpp
   processor.cpp
+
   matrix1.cpp
   vectutils.cpp
+
   testMatrix.cpp
   testTokenizer.cpp
   testToken.cpp

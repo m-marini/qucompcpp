@@ -14,6 +14,7 @@ namespace qc
         virtual const Value *neg(const SourceContext &source, const Value *arg) = 0;
         virtual const Value *assign(const SourceContext &source, const std::string &id, const Value *arg) = 0;
         virtual const Value *retrieveVar(const SourceContext &source, const std::string &id) = 0;
+        virtual const Value *callFunction(const SourceContext &source, const std::string &id, const Value *args) = 0;
     };
 }
 

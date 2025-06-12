@@ -115,6 +115,7 @@ INSTANTIATE_TEST_SUITE_P(testProcessorError,
                          ProcessorErrorFixture,
                          testing::Values(
                              // Code, expected error
+                             pair<string, string>{"sqrt(|0>);", "Unexpected value (1,0)\n(0,0)"},
                              pair<string, string>{"a;", "Undefined variable a"},
                              pair<string, string>{"||+>>;", "Expected integer value, actual: (0.707107,0)\n(0.707107,0)"},
                              pair<string, string>{"|1.0>;", "Expected integer value, actual: (1,0)"}));
@@ -126,9 +127,11 @@ INSTANTIATE_TEST_SUITE_P(testProcessor,
                          ProcessorFixture,
                          testing::Values(
                              // Code, expected result
-                             pair<string, Value *>{"let a = 1;a;", new ListValue({new IntValue(1),new IntValue(1)})},
-                             pair<string, Value *>{"let a = i;a;", new ListValue({new ComplexValue(1i),new ComplexValue(1i)})},
-                             pair<string, Value *>{"let a = |0>;a;", new ListValue({new MatrixValue(KET0),new MatrixValue(KET0)})},
+                             pair<string, Value *>{"sqrt(4);", new ListValue({new ComplexValue(2)})},
+                             pair<string, Value *>{"sqrt(4.0);", new ListValue({new ComplexValue(2)})},
+                             pair<string, Value *>{"let a = 1;a;", new ListValue({new IntValue(1), new IntValue(1)})},
+                             pair<string, Value *>{"let a = i;a;", new ListValue({new ComplexValue(1i), new ComplexValue(1i)})},
+                             pair<string, Value *>{"let a = |0>;a;", new ListValue({new MatrixValue(KET0), new MatrixValue(KET0)})},
                              pair<string, Value *>{"let a = 1;", new ListValue({new IntValue(1)})},
                              pair<string, Value *>{"let a = i;", new ListValue({new ComplexValue(1i)})},
                              pair<string, Value *>{"let a = |0>;", new ListValue({new MatrixValue(KET0)})},

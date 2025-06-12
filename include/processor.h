@@ -31,6 +31,7 @@ namespace qc
         virtual const Value *neg(const SourceContext &source, const Value *arg) override;
         virtual const Value *assign(const SourceContext &source, const std::string &id, const Value *arg) override;
         virtual const Value *retrieveVar(const SourceContext &source, const std::string &id) override;
+        virtual const Value *callFunction(const SourceContext &source, const std::string &id, const Value *args) override;
     };
 
     extern const std::map<std::string, qc::FunctionDef>

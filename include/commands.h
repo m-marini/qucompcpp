@@ -146,6 +146,8 @@ namespace qc
         const std::string &id(void) const { return _id; }
 
         virtual std::ostream &write(std::ostream &stream) const override;
+
+        virtual const Value *eval(ProcessContext &context) const override;
     };
 
     class Int2StateCommand : public CompositeCommand

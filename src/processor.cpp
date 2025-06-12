@@ -27,6 +27,16 @@ const map<string, FunctionDef> qc::QU_PROCESSOR_FUNCTIONS{
     {"qubit1", FunctionDef("qubit1", 2)},
     {"normalise", FunctionDef("normalise", 1)}};
 
+static const Value *intSqrt(const SourceContext &context, const int arg)
+{
+    return new ComplexValue(sqrt((complex<double>)arg));
+}
+
+static const Value *complexSqrt(const SourceContext &context, const complex<double> &arg)
+{
+    return new ComplexValue(sqrt(arg));
+}
+
 static const Value *intNegate(const SourceContext &context, const int state)
 {
     return new IntValue(-state);
@@ -74,6 +84,9 @@ const ChainUnaryOperator &negOper = *(new UnaryErrorOperator("Unexpected value: 
                                          ->mapIntValue(intNegate)
                                          ->mapComplexValue(complexNegate)
                                          ->mapMatrixValue(matrixNegate);
+const ChainUnaryOperator &sqrtOper = *(new UnaryErrorOperator("Unexpected value "))
+                                          ->mapIntValue(intSqrt)
+                                          ->mapComplexValue(complexSqrt);
 
 const Value *Processor::dagger(const SourceContext &source, const Value *arg)
 {
@@ -133,4 +146,20 @@ const Value *Processor::retrieveVar(const SourceContext &source, const string &i
         throw source.execException("Undefined variable " + id);
     }
     return _variables.at(id)->clone();
+}
+
+const Value *Processor::callFunction(const SourceContext &source, const string &id, const Value *args)
+{
+    try
+    {
+        const Value *arg = ((const ListValue *)args)->values().at(0);
+        const Value *result = sqrtOper.apply(source, *arg);
+        delete args;
+        return result;
+    }
+    catch (QuExecException ex)
+    {
+        delete args;
+        throw;
+    }
 }

@@ -1,10 +1,18 @@
-
 #include "commands.h"
 
 using namespace std;
 using namespace qc;
 using namespace mx;
 
+const Value *CallFunctionCommand::eval(ProcessContext &context) const
+{
+    vector<const Value *> args;
+    for (const NodeCommand *arg : _commands)
+    {
+        args.push_back(arg->eval(context));
+    }
+    return context.callFunction(source(), _id, new ListValue(args));
+}
 
 const ListValue *ListCommand::eval(ProcessContext &context) const
 {

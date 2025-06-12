@@ -16,6 +16,7 @@ namespace qc
     typedef std::function<const Value *(const SourceContext &, const mx::Matrix &)> MatrixMapperFunction;
     typedef std::function<const Value *(const SourceContext &, const std::vector<Value *> &)> ListMapperFunction;
 
+    typedef std::function<const Value *(const SourceContext &, const int, const int)> IntIntMapperFunction;
     typedef std::function<const Value *(const SourceContext &, const mx::Matrix &, const mx::Matrix &)> MatrixMatrixMapperFunction;
 
     class UnaryOperator
@@ -101,6 +102,7 @@ namespace qc
         ~ChainBinaryOperator();
 
         ChainBinaryOperator *mapMatrixMatrixValue(const MatrixMatrixMapperFunction &mapper) const;
+        ChainBinaryOperator *mapIntIntValue(const IntIntMapperFunction &mapper) const;
     };
 
     class BinaryErrorOperator : public ChainBinaryOperator
@@ -119,6 +121,17 @@ namespace qc
 
     public:
         MatrixMatrixOperator(const MatrixMatrixMapperFunction &mapper, const BinaryOperator *other)
+            : ChainBinaryOperator(other), _mapper(mapper) {}
+
+        virtual const Value *apply(const SourceContext &context, const Value &left, const Value &right) const override;
+    };
+
+    class IntIntOperator : public ChainBinaryOperator
+    {
+        IntIntMapperFunction _mapper;
+
+    public:
+        IntIntOperator(const IntIntMapperFunction &mapper, const BinaryOperator *other)
             : ChainBinaryOperator(other), _mapper(mapper) {}
 
         virtual const Value *apply(const SourceContext &context, const Value &left, const Value &right) const override;

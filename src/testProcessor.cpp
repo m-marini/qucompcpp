@@ -115,6 +115,7 @@ INSTANTIATE_TEST_SUITE_P(testProcessorError,
                          ProcessorErrorFixture,
                          testing::Values(
                              // Code, expected error
+                             pair<string, string>{"0 x 0;", "Expected matrix x matrix, actual: 0, 0"},
                              pair<string, string>{"X(i);", "Expected integer value, actual (0,1)"},
                              pair<string, string>{"X(|0>);", "Expected integer value, actual (1,0)\n(0,0)"},
                              pair<string, string>{"I(i);", "Expected integer value, actual (0,1)"},
@@ -135,11 +136,16 @@ static const Matrix X1(4, 4,
                         0, 1, 0, 0,
                         0, 0, 0, 1,
                         1, 0, 1, 0});
+static const Matrix ARY02(2, 4,
+                       {0, 0, 1, 0,
+                        0, 0, 0, 0});
 
 INSTANTIATE_TEST_SUITE_P(testProcessor,
                          ProcessorFixture,
                          testing::Values(
                              // Code, expected result
+                             pair<string, Value *>{"ary(0,2);", new ListValue({new MatrixValue(ARY02)})},
+                             pair<string, Value *>{"2*3;", new ListValue({new IntValue(6)})},
                              pair<string, Value *>{"|0> x |0>;", new ListValue({new MatrixValue(X00)})},
                              pair<string, Value *>{"X(1);", new ListValue({new MatrixValue(X1)})},
                              pair<string, Value *>{"X(0);", new ListValue({new MatrixValue(X0)})},

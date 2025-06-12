@@ -90,6 +90,12 @@ namespace mx
         static const Matrix ketBase(const int state);
 
         /**
+         * Returns the ket base
+         * @state the state
+         */
+        static const Matrix ary(const int i, const int j);
+
+        /**
          * Returns the I gate
          * @qubit the bit to apply the I gates
          */

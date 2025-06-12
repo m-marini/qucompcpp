@@ -8,6 +8,21 @@ using namespace std;
 using namespace qc;
 using namespace mx;
 
+// -------- ary
+
+static const Value *ary(const SourceContext &context, const int i, const int j)
+{
+    return new MatrixValue(Matrix::ary(i, j));
+}
+
+const ChainBinaryOperator &aryOper = *(new BinaryErrorOperator("Expected int, int, actual: "))
+                                          ->mapIntIntValue(ary);
+
+const static FunctionMapper aryMapper = [](const SourceContext &context, const ListValue &args)
+{
+    return aryOper.apply(context, *args.values().at(0), *args.values().at(1));
+};
+
 // -------- sqrt
 
 static const Value *intSqrt(const SourceContext &context, const int arg)
@@ -91,7 +106,7 @@ const static FunctionMapper nullMapper;
 
 const map<string, FunctionDef> qc::QU_PROCESSOR_FUNCTIONS{
     {"sqrt", FunctionDef("sqrt", 1, sqrtMapper)},
-    {"ary", FunctionDef("ary", 2, nullMapper)},
+    {"ary", FunctionDef("ary", 2, aryMapper)},
     {"sim", FunctionDef("sim", 2, nullMapper)},
     {"eps", FunctionDef("eps", 2, nullMapper)},
     {"I", FunctionDef("I", 1, iMapper)},

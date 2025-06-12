@@ -293,12 +293,27 @@ const Matrix Matrix::cross(const Matrix &right) const
             {
                 for (size_t l = 0; l < right._numCols; l++)
                 {
-                        cells.push_back(at(i, k)*right.at(j, l));
+                    cells.push_back(at(i, k) * right.at(j, l));
                 }
             }
         }
     }
     return Matrix(rows, cols, cells);
+}
+
+const Matrix Matrix::ary(const int ii, const int jj) 
+{
+    const int n = 1 << numBitsByState(ii);
+    const int m = 1 << numBitsByState(jj);
+    ComplexVect cells;
+    for (size_t i = 0; i < n; i++)
+    {
+        for (size_t j = 0; j < m; j++)
+        {
+            cells.push_back(i == ii && j == jj ? 1 : 0);
+        }
+    }
+    return Matrix(n, m, cells);
 }
 
 const string to_string(const Matrix &a)

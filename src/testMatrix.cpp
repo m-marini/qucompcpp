@@ -73,3 +73,13 @@ TEST(testMatrix, cross)
     EXPECT_EQ(4, c.numRows());
     EXPECT_EQ(to_string(exp), to_string(c));
 }
+
+TEST(testMatrix, ARY)
+{
+    Matrix exp(2, 4,
+               {0, 0, 1, 0,
+                0, 0, 0, 0});
+    Matrix c = Matrix::ary(0, 2);
+
+    EXPECT_EQ(to_string(exp), to_string(c));
+}

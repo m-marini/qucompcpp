@@ -205,3 +205,27 @@ TEST(testOperators, testBinaryMatrixMatrix)
          } }, QuExecException);
     delete op;
 }
+
+TEST(testOperators, testBinaryIntInt)
+{
+    IntIntMapperFunction f = [](const SourceContext &context, const int left, const int right)
+    {
+        return new MatrixValue(PLUS_KET);
+    };
+    ChainBinaryOperator *op = (new BinaryErrorOperator("Unexpected values: "))
+                                  ->mapIntIntValue(f);
+    const SourceContext context("1", "1", 1, 0);
+    const Value *value = op->apply(context, IntValue(1), IntValue(2));
+    EXPECT_EQ(ValueType::matrixValueType, value->type());
+    EXPECT_EQ(to_string(PLUS_KET), to_string(((const MatrixValue *)value)->value()));
+
+    EXPECT_THROW({ 
+        try
+         {
+        op->apply(context, ComplexValue(1), ComplexValue(2));
+         } catch (QuExecException ex){
+            EXPECT_STREQ("Unexpected values: (1,0), (2,0)", ex.what());
+            throw;
+         } }, QuExecException);
+    delete op;
+}

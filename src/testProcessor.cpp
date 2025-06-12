@@ -8,7 +8,6 @@
 #include "qusyntax.h"
 #include "syntaxRules.h"
 
-
 using namespace std;
 using namespace qc;
 using namespace mx;
@@ -116,15 +115,31 @@ INSTANTIATE_TEST_SUITE_P(testProcessorError,
                          ProcessorErrorFixture,
                          testing::Values(
                              // Code, expected error
-                             pair<string, string>{"||+>>;", "Expected integer value: (0.707107,0)\n(0.707107,0)"},
-                             pair<string, string>{"|1.0>;", "Expected integer value: (1,0)"}));
+                             pair<string, string>{"a;", "Undefined variable a"},
+                             pair<string, string>{"||+>>;", "Expected integer value, actual: (0.707107,0)\n(0.707107,0)"},
+                             pair<string, string>{"|1.0>;", "Expected integer value, actual: (1,0)"}));
+
+static const Matrix KET0(2, 1, {1, 0});
+static const Matrix KET3(4, 1, {0, 0, 0, 1});
 
 INSTANTIATE_TEST_SUITE_P(testProcessor,
                          ProcessorFixture,
                          testing::Values(
                              // Code, expected result
-                             pair<string, Value *>{"|3>;", new ListValue({new MatrixValue(Matrix(4, 1, {0, 0, 0, 1}))})},
-                             pair<string, Value *>{"|0>;", new ListValue({new MatrixValue(Matrix(2, 1, {1, 0}))})},
+                             pair<string, Value *>{"let a = 1;a;", new ListValue({new IntValue(1),new IntValue(1)})},
+                             pair<string, Value *>{"let a = i;a;", new ListValue({new ComplexValue(1i),new ComplexValue(1i)})},
+                             pair<string, Value *>{"let a = |0>;a;", new ListValue({new MatrixValue(KET0),new MatrixValue(KET0)})},
+                             pair<string, Value *>{"let a = 1;", new ListValue({new IntValue(1)})},
+                             pair<string, Value *>{"let a = i;", new ListValue({new ComplexValue(1i)})},
+                             pair<string, Value *>{"let a = |0>;", new ListValue({new MatrixValue(KET0)})},
+                             pair<string, Value *>{"-1;", new ListValue({new IntValue(-1)})},
+                             pair<string, Value *>{"-i;", new ListValue({new ComplexValue(-1i)})},
+                             pair<string, Value *>{"-|0>;", new ListValue({new MatrixValue(-KET0)})},
+                             pair<string, Value *>{"1^;", new ListValue({new IntValue(1)})},
+                             pair<string, Value *>{"i^;", new ListValue({new ComplexValue({0, -1})})},
+                             pair<string, Value *>{"<0|;", new ListValue({new MatrixValue(Matrix(KET0.dagger()))})},
+                             pair<string, Value *>{"|3>;", new ListValue({new MatrixValue(KET3)})},
+                             pair<string, Value *>{"|0>;", new ListValue({new MatrixValue(KET0)})},
                              pair<string, Value *>{"|+>;", new ListValue({new MatrixValue(PLUS_KET)})},
                              pair<string, Value *>{"1.2;", new ListValue({new ComplexValue(1.2)})},
                              pair<string, Value *>{"1;", new ListValue({new IntValue(1)})}));

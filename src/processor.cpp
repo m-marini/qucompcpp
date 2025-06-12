@@ -27,13 +27,83 @@ const map<string, FunctionDef> qc::QU_PROCESSOR_FUNCTIONS{
     {"qubit1", FunctionDef("qubit1", 2)},
     {"normalise", FunctionDef("normalise", 1)}};
 
+static const Value *intNegate(const SourceContext &context, const int state)
+{
+    return new IntValue(-state);
+}
+
+static const Value *complexNegate(const SourceContext &context, const complex<double> &state)
+{
+    return new ComplexValue(-state);
+}
+
+static const Value *matrixNegate(const SourceContext &context, const Matrix &state)
+{
+    return new MatrixValue(-state);
+}
+
 static const Value *int2State(const SourceContext &context, const int state)
 {
     return new MatrixValue(Matrix::ketBase(state));
 }
 
-const ChainUnaryOperator &int2StateOper = *(new UnaryErrorOperator("Expected integer value: "))
+static const Value *intDagger(const SourceContext &context, const int value)
+{
+    return new IntValue(value);
+}
+
+static const Value *complexDagger(const SourceContext &context, const complex<double> &value)
+{
+    return new ComplexValue(conj(value));
+}
+
+static const Value *matrixDagger(const SourceContext &context, const Matrix &value)
+{
+    return new MatrixValue(value.dagger());
+}
+
+const ChainUnaryOperator &int2StateOper = *(new UnaryErrorOperator("Expected integer value, actual: "))
                                                ->mapIntValue(int2State);
+
+const ChainUnaryOperator &daggerOper = *(new UnaryErrorOperator("Unexpected value: "))
+                                            ->mapIntValue(intDagger)
+                                            ->mapComplexValue(complexDagger)
+                                            ->mapMatrixValue(matrixDagger);
+
+const ChainUnaryOperator &negOper = *(new UnaryErrorOperator("Unexpected value: "))
+                                         ->mapIntValue(intNegate)
+                                         ->mapComplexValue(complexNegate)
+                                         ->mapMatrixValue(matrixNegate);
+
+const Value *Processor::dagger(const SourceContext &source, const Value *arg)
+{
+    try
+    {
+        const Value *result = daggerOper.apply(source, *arg);
+        delete arg;
+        return result;
+    }
+    catch (QuExecException ex)
+    {
+        delete arg;
+        throw;
+    }
+}
+
+const Value *Processor::neg(const SourceContext &source, const Value *arg)
+{
+    try
+    {
+        const Value *result = negOper.apply(source, *arg);
+        delete arg;
+        return result;
+    }
+    catch (QuExecException ex)
+    {
+        delete arg;
+        throw;
+    }
+}
 
 const Value *Processor::int2Ket(const SourceContext &source, const Value *arg)
 {
@@ -48,4 +118,19 @@ const Value *Processor::int2Ket(const SourceContext &source, const Value *arg)
         delete arg;
         throw;
     }
+}
+
+const Value *Processor::assign(const SourceContext &source, const string &id, const Value *arg)
+{
+    return _variables[id] = arg->clone();
+    delete arg;
+}
+
+const Value *Processor::retrieveVar(const SourceContext &source, const string &id)
+{
+    if (_variables.count(id) == 0)
+    {
+        throw source.execException("Undefined variable " + id);
+    }
+    return _variables.at(id)->clone();
 }

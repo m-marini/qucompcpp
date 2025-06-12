@@ -61,6 +61,30 @@ namespace mx
          */
         Matrix &operator=(const Matrix &a);
 
+        /**
+         * Return the transpose congiugate matrix
+         */
+        const Matrix dagger(void) const { return transpose().conj(); }
+
+        /**
+         * Return the congiugate matrix
+         */
+        const Matrix conj(void) const;
+
+        /**
+         * Return the negate matrix
+         */
+        const Matrix operator-(void) const;
+
+        /**
+         * Return the transpose congiugate matrix
+         */
+        const Matrix transpose(void) const;
+
+        /**
+         * Returns the ket base
+         * @state the state
+         */
         static const Matrix ketBase(const int state);
     };
 

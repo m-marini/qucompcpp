@@ -44,6 +44,21 @@ void Matrix::validateIndices(const size_t i, const size_t j) const
     }
 }
 
+const Matrix Matrix::transpose(void) const
+{
+    return Matrix(_numCols, _numRows, _cells);
+}
+
+const Matrix Matrix::conj(void) const
+{
+    return Matrix(_numRows,_numCols, vu::conj(_cells));
+}
+
+const Matrix Matrix::operator-(void) const
+{
+    return Matrix(_numRows,_numCols, -_cells);
+}
+
 ostream &operator<<(ostream &os, const Matrix &a)
 {
     bool isFirstRow = true;

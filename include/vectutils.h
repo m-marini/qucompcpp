@@ -14,6 +14,7 @@ namespace vu
     extern const ComplexVect operator*(const ComplexVect &a, const ComplexVect &b);
     extern const ComplexVect operator*(const std::complex<double> &a, const ComplexVect &b);
     extern const ComplexVect conj(const ComplexVect &a);
+    extern const ComplexVect operator-(const ComplexVect &a);
     extern const size_t numBitsByState(const size_t state);
 
     /**

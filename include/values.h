@@ -3,6 +3,7 @@
 
 #include <complex>
 #include <vector>
+#include <map>
 #include <ostream>
 
 #include "matrix.h"
@@ -22,6 +23,8 @@ namespace qc
     public:
         virtual const ValueType type(void) const = 0;
 
+        virtual const Value *clone(void) const = 0;
+
         virtual std::ostream &write(std::ostream &stream) const { return stream << "value"; }
     };
 
@@ -37,6 +40,8 @@ namespace qc
         const int value(void) const { return _value; }
 
         virtual std::ostream &write(std::ostream &stream) const override { return stream << _value; }
+
+        virtual const Value *clone(void) const override { return new IntValue(*this); }
     };
 
     class ComplexValue : public Value
@@ -49,6 +54,8 @@ namespace qc
         virtual const ValueType type(void) const override { return ValueType::complexValueType; };
 
         const std::complex<double> &value(void) const { return _value; }
+
+        virtual const Value *clone(void) const override { return new ComplexValue(*this); }
 
         virtual std::ostream &write(std::ostream &stream) const override { return stream << _value; }
     };
@@ -63,6 +70,8 @@ namespace qc
         virtual const ValueType type(void) const override { return ValueType::matrixValueType; };
 
         const mx::Matrix &value(void) const { return _value; }
+
+        virtual const Value *clone(void) const override { return new MatrixValue(*this); }
 
         virtual std::ostream &write(std::ostream &stream) const override { return stream << _value; }
     };
@@ -80,6 +89,8 @@ namespace qc
         const std::vector<const Value *> &values(void) const { return _values; }
 
         virtual std::ostream &write(std::ostream &stream) const override;
+
+        virtual const Value *clone(void) const override { throw std::logic_error("Clone of list values is not supported"); }
     };
 
 }

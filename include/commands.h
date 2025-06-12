@@ -100,6 +100,11 @@ namespace qc
         {
             return stream << _id;
         }
+
+        virtual const Value *eval(ProcessContext &context) const override
+        {
+            return context.retrieveVar(source(), _id);
+        }
     };
 
     class CompositeCommand : public NodeCommand
@@ -167,6 +172,11 @@ namespace qc
             add(arg);
         }
         virtual std::ostream &write(std::ostream &stream) const override;
+
+        virtual const Value *eval(ProcessContext &context) const override
+        {
+            return context.dagger(source(), _commands.at(0)->eval(context));
+        }
     };
 
     class NegateCommand : public CompositeCommand
@@ -176,7 +186,13 @@ namespace qc
         {
             add(arg);
         }
+
         virtual std::ostream &write(std::ostream &stream) const override;
+
+        virtual const Value *eval(ProcessContext &context) const override
+        {
+            return context.neg(source(), _commands.at(0)->eval(context));
+        }
     };
 
     class AssignCommand : public CompositeCommand
@@ -185,7 +201,13 @@ namespace qc
 
     public:
         AssignCommand(const SourceContext &source, const std::string &id) : CompositeCommand(source), _id(id) {}
+
         virtual std::ostream &write(std::ostream &stream) const override;
+
+        virtual const Value *eval(ProcessContext &context) const override
+        {
+            return context.assign(source(), _id, _commands.at(0)->eval(context));
+        }
     };
 
     class CrossCommand : public CompositeCommand

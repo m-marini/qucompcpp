@@ -86,6 +86,24 @@ namespace mx
          * @state the state
          */
         static const Matrix ketBase(const int state);
+
+        /**
+         * Returns the I gate
+         * @qubit the bit to apply the I gates
+         */
+        static const Matrix I(const size_t qubit);
+
+        /**
+         * Returns the I gate
+         * @qubit the bit to apply the I gates
+         */
+        static const Matrix X(const size_t qubit);
+
+        /**
+         * Returns the identity matrix
+         * @size the size of matrix
+         */
+        static const Matrix identity(const size_t size);
     };
 
     extern const Matrix PLUS_KET;

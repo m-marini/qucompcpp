@@ -115,6 +115,10 @@ INSTANTIATE_TEST_SUITE_P(testProcessorError,
                          ProcessorErrorFixture,
                          testing::Values(
                              // Code, expected error
+                             pair<string, string>{"X(i);", "Expected integer value, actual (0,1)"},
+                             pair<string, string>{"X(|0>);", "Expected integer value, actual (1,0)\n(0,0)"},
+                             pair<string, string>{"I(i);", "Expected integer value, actual (0,1)"},
+                             pair<string, string>{"I(|0>);", "Expected integer value, actual (1,0)\n(0,0)"},
                              pair<string, string>{"sqrt(|0>);", "Unexpected value (1,0)\n(0,0)"},
                              pair<string, string>{"a;", "Undefined variable a"},
                              pair<string, string>{"||+>>;", "Expected integer value, actual: (0.707107,0)\n(0.707107,0)"},
@@ -122,11 +126,26 @@ INSTANTIATE_TEST_SUITE_P(testProcessorError,
 
 static const Matrix KET0(2, 1, {1, 0});
 static const Matrix KET3(4, 1, {0, 0, 0, 1});
+static const Matrix I0(2, 2, {1, 0, 0, 1});
+static const Matrix X0(2, 2, {1, 0, 1, 0});
+static const Matrix X1(4, 4,
+     {
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 0, 1,
+    1, 0, 1, 0
+});
 
 INSTANTIATE_TEST_SUITE_P(testProcessor,
                          ProcessorFixture,
                          testing::Values(
                              // Code, expected result
+                             pair<string, Value *>{"X(1);", new ListValue({new MatrixValue(X1)})},
+                             pair<string, Value *>{"X(0);", new ListValue({new MatrixValue(X0)})},
+                             pair<string, Value *>{"I(0);", new ListValue({new MatrixValue(I0)})},
+                             pair<string, Value *>{"normalise(4);", new ListValue({new IntValue(1)})},
+                             pair<string, Value *>{"normalise(2.0);", new ListValue({new ComplexValue(1)})},
+                             pair<string, Value *>{"normalise(|0>);", new ListValue({new MatrixValue(KET0)})},
                              pair<string, Value *>{"sqrt(4);", new ListValue({new ComplexValue(2)})},
                              pair<string, Value *>{"sqrt(4.0);", new ListValue({new ComplexValue(2)})},
                              pair<string, Value *>{"let a = 1;a;", new ListValue({new IntValue(1), new IntValue(1)})},

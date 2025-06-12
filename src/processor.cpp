@@ -8,24 +8,7 @@ using namespace std;
 using namespace qc;
 using namespace mx;
 
-const map<string, FunctionDef> qc::QU_PROCESSOR_FUNCTIONS{
-    {"sqrt", FunctionDef("sqrt", 1)},
-    {"ary", FunctionDef("ary", 2)},
-    {"sim", FunctionDef("sim", 2)},
-    {"eps", FunctionDef("eps", 2)},
-    {"I", FunctionDef("I", 1)},
-    {"H", FunctionDef("H", 1)},
-    {"X", FunctionDef("X", 1)},
-    {"Y", FunctionDef("Y", 1)},
-    {"Z", FunctionDef("Z", 1)},
-    {"S", FunctionDef("S", 1)},
-    {"T", FunctionDef("T", 1)},
-    {"SWAP", FunctionDef("SWAP", 2)},
-    {"CNOT", FunctionDef("CNOT", 2)},
-    {"CCNOT", FunctionDef("CCNOT", 3)},
-    {"qubit0", FunctionDef("qubit0", 2)},
-    {"qubit1", FunctionDef("qubit1", 2)},
-    {"normalise", FunctionDef("normalise", 1)}};
+// -------- sqrt
 
 static const Value *intSqrt(const SourceContext &context, const int arg)
 {
@@ -36,6 +19,95 @@ static const Value *complexSqrt(const SourceContext &context, const complex<doub
 {
     return new ComplexValue(sqrt(arg));
 }
+
+const ChainUnaryOperator &sqrtOper = *(new UnaryErrorOperator("Unexpected value "))
+                                          ->mapIntValue(intSqrt)
+                                          ->mapComplexValue(complexSqrt);
+
+const static FunctionMapper sqrtMapper = [](const SourceContext &context, const ListValue &args)
+{
+    return sqrtOper.apply(context, *args.values().at(0));
+};
+
+// -------- normalise
+
+static const Value *intNormalise(const SourceContext &context, const int arg)
+{
+    return new IntValue(1);
+}
+#include <iostream>
+
+static const Value *complexNormalise(const SourceContext &context, const complex<double> &arg)
+{
+    return new ComplexValue(arg / sqrt(norm(arg)));
+}
+
+static const Value *matrixNormalise(const SourceContext &context, const Matrix &arg)
+{
+    return new MatrixValue(arg);
+}
+
+const ChainUnaryOperator &normOper = *(new UnaryErrorOperator("Unexpected value "))
+                                          ->mapIntValue(intNormalise)
+                                          ->mapComplexValue(complexNormalise)
+                                          ->mapMatrixValue(matrixNormalise);
+
+const static FunctionMapper normMapper = [](const SourceContext &context, const ListValue &args)
+{
+    return normOper.apply(context, *args.values().at(0));
+};
+
+// -------- I
+
+static const Value *intI(const SourceContext &context, const int arg)
+{
+    return new MatrixValue(Matrix::I(arg));
+}
+
+const ChainUnaryOperator &iOper = *(new UnaryErrorOperator("Expected integer value, actual "))
+                                       ->mapIntValue(intI);
+
+const static FunctionMapper iMapper = [](const SourceContext &context, const ListValue &args)
+{
+    return iOper.apply(context, *args.values().at(0));
+};
+
+
+// -------- X
+
+static const Value *intX(const SourceContext &context, const int arg)
+{
+    return new MatrixValue(Matrix::I(arg));
+}
+
+const ChainUnaryOperator &xOper = *(new UnaryErrorOperator("Expected integer value, actual "))
+                                       ->mapIntValue(intX);
+
+const static FunctionMapper xMapper = [](const SourceContext &context, const ListValue &args)
+{
+    return xOper.apply(context, *args.values().at(0));
+};
+
+const static FunctionMapper nullMapper;
+
+const map<string, FunctionDef> qc::QU_PROCESSOR_FUNCTIONS{
+    {"sqrt", FunctionDef("sqrt", 1, sqrtMapper)},
+    {"ary", FunctionDef("ary", 2, nullMapper)},
+    {"sim", FunctionDef("sim", 2, nullMapper)},
+    {"eps", FunctionDef("eps", 2, nullMapper)},
+    {"I", FunctionDef("I", 1, iMapper)},
+    {"H", FunctionDef("H", 1, nullMapper)},
+    {"X", FunctionDef("X", 1, xMapper)},
+    {"Y", FunctionDef("Y", 1, nullMapper)},
+    {"Z", FunctionDef("Z", 1, nullMapper)},
+    {"S", FunctionDef("S", 1, nullMapper)},
+    {"T", FunctionDef("T", 1, nullMapper)},
+    {"SWAP", FunctionDef("SWAP", 2, nullMapper)},
+    {"CNOT", FunctionDef("CNOT", 2, nullMapper)},
+    {"CCNOT", FunctionDef("CCNOT", 3, nullMapper)},
+    {"qubit0", FunctionDef("qubit0", 2, nullMapper)},
+    {"qubit1", FunctionDef("qubit1", 2, nullMapper)},
+    {"normalise", FunctionDef("normalise", 1, normMapper)}};
 
 static const Value *intNegate(const SourceContext &context, const int state)
 {
@@ -84,9 +156,6 @@ const ChainUnaryOperator &negOper = *(new UnaryErrorOperator("Unexpected value: 
                                          ->mapIntValue(intNegate)
                                          ->mapComplexValue(complexNegate)
                                          ->mapMatrixValue(matrixNegate);
-const ChainUnaryOperator &sqrtOper = *(new UnaryErrorOperator("Unexpected value "))
-                                          ->mapIntValue(intSqrt)
-                                          ->mapComplexValue(complexSqrt);
 
 const Value *Processor::dagger(const SourceContext &source, const Value *arg)
 {
@@ -152,8 +221,8 @@ const Value *Processor::callFunction(const SourceContext &source, const string &
 {
     try
     {
-        const Value *arg = ((const ListValue *)args)->values().at(0);
-        const Value *result = sqrtOper.apply(source, *arg);
+        const FunctionMapper &mapper = QU_PROCESSOR_FUNCTIONS.at(id).mapper();
+        const Value *result = mapper(source, *(const ListValue *)args);
         delete args;
         return result;
     }

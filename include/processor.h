@@ -3,22 +3,34 @@
 
 #include <string>
 #include <map>
+#include <functional>
 
 #include "values.h"
 #include "processContext.h"
 
 namespace qc
 {
+    typedef std::function<const Value *(const SourceContext &, const ListValue &)> FunctionMapper;
+
     class FunctionDef
     {
         std::string _id;
         int _numArgs;
+        const FunctionMapper _mapper;
 
     public:
-        FunctionDef(const std::string &id, const int numArgs) : _id(id), _numArgs(numArgs) {}
+        FunctionDef(const std::string &id, const int numArgs, const FunctionMapper mapper) : _id(id), _numArgs(numArgs), _mapper(mapper) {}
 
-        const std::string &id(void) const { return _id; }
-        const int numArgs(void) const { return _numArgs; }
+        const std::string &id(void) const
+        {
+            return _id;
+        }
+        const int numArgs(void) const
+        {
+            return _numArgs;
+        }
+
+        const FunctionMapper &mapper(void) const { return _mapper; }
     };
 
     class Processor : public ProcessContext

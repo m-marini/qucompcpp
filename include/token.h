@@ -25,6 +25,18 @@ namespace qc
      */
     class Token
     {
+
+    private:
+        SourceContext _context;
+
+    protected:
+        /**
+         * Creates the token
+         * @param context the source context
+         * @param type the token type
+         */
+        Token(const SourceContext &context) : _context(context) {}
+
     public:
         /**
          * Returns the context
@@ -39,30 +51,23 @@ namespace qc
         /**
          * Returns the token type
          */
-        const TokenType &type(void) const { return _type; }
+        virtual const TokenType type(void) const = 0;
 
         /**
          * Returns the polymorphic copy of token
          */
         virtual Token *clone(void) const = 0;
-
-    protected:
-        /**
-         * Creates the token
-         * @param context the source context
-         * @param type the token type
-         */
-        Token(const SourceContext &context, const TokenType &type) : _context(context), _type(type) {}
-
-    private:
-        SourceContext _context;
-        TokenType _type;
     };
 
     class IntegerToken : public Token
     {
     public:
-        IntegerToken(const SourceContext &context) : Token(context, TokenType::integerTokenType) {}
+        IntegerToken(const SourceContext &context) : Token(context) {}
+
+        /**
+         * Returns the token type
+         */
+        virtual const TokenType type(void) const override { return TokenType::integerTokenType; }
 
         /**
          * Returns the integer value of token
@@ -78,7 +83,12 @@ namespace qc
     class RealToken : public Token
     {
     public:
-        RealToken(const SourceContext &context) : Token(context, TokenType::realTokenType) {}
+        RealToken(const SourceContext &context) : Token(context) {}
+
+        /**
+         * Returns the token type
+         */
+        virtual const TokenType type(void) const override { return TokenType::realTokenType; }
 
         /**
          * Returns the real value of token
@@ -97,7 +107,12 @@ namespace qc
     class EOFToken : public Token
     {
     public:
-        EOFToken(const SourceContext &context) : Token(context, TokenType::eofTokenType) {}
+        EOFToken(const SourceContext &context) : Token(context) {}
+
+        /**
+         * Returns the token type
+         */
+        virtual const TokenType type(void) const override { return TokenType::eofTokenType; }
 
         /**
          * Returns the polymorphic copy of token
@@ -111,7 +126,12 @@ namespace qc
     class OperatorToken : public Token
     {
     public:
-        OperatorToken(const SourceContext &context) : Token(context, TokenType::opTokenType) {}
+        OperatorToken(const SourceContext &context) : Token(context) {}
+
+        /**
+         * Returns the token type
+         */
+        virtual const TokenType type(void) const override { return TokenType::opTokenType; }
 
         /**
          * Returns the polymorphic copy of token
@@ -125,7 +145,12 @@ namespace qc
     class IdentifierToken : public Token
     {
     public:
-        IdentifierToken(const SourceContext &context) : Token(context, TokenType::identifierTokenType) {}
+        IdentifierToken(const SourceContext &context) : Token(context) {}
+
+        /**
+         * Returns the token type
+         */
+        virtual const TokenType type(void) const override { return TokenType::identifierTokenType; }
 
         /**
          * Returns the polymorphic copy of token

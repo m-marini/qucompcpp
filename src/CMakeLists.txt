@@ -39,6 +39,7 @@ add_executable(qucomp
   compiler.cpp
 
   values.cpp
+  operators.cpp
   processor.cpp
 )
 
@@ -61,6 +62,7 @@ add_executable(
   compiler.cpp
 
   values.cpp
+  operators.cpp
   processor.cpp
 
   matrix1.cpp
@@ -73,6 +75,7 @@ add_executable(
   testQusyntax.cpp
   testProcessor.cpp
   testCompiler.cpp
+  testOperators.cpp
 )
 target_include_directories(run_tests PUBLIC "../include" "${PROJECT_BINARY_DIR}")
 target_link_libraries(

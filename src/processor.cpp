@@ -2,6 +2,7 @@
 #include "values.h"
 #include "commands.h"
 #include "matrix.h"
+#include "operators.h"
 
 using namespace std;
 using namespace qc;
@@ -26,40 +27,19 @@ const map<string, FunctionDef> qc::QU_PROCESSOR_FUNCTIONS{
     {"qubit1", FunctionDef("qubit1", 2)},
     {"normalise", FunctionDef("normalise", 1)}};
 
-class Int2StateMapper : public ValueMapper
+static const Value *int2State(const SourceContext &context, const int state)
 {
-    const SourceContext &_ctx;
+    return new MatrixValue(Matrix::ketBase(state));
+}
 
-public:
-    Int2StateMapper(const SourceContext &ctx) : _ctx(ctx) {}
-
-    virtual const Value *map(const IntValue &value) const
-    {
-        return new MatrixValue(Matrix::ketBase(value.value()));
-    };
-    
-    virtual const Value *map(const ComplexValue &value) const
-    {
-        throw _ctx.execException("Expected integer value: " + to_string(value));
-    };
-    
-    virtual const Value *map(const MatrixValue &value) const
-    {
-        throw _ctx.execException("Expected integer value: (" + to_string(value) + ")");
-    };
-    
-    virtual const Value *map(const ListValue &value) const
-    {
-        throw _ctx.execException("Expected integer value: " + to_string(value));
-    };
-};
+const ChainUnaryOperator &int2StateOper = *(new UnaryErrorOperator("Expected integer value: "))
+                                               ->mapIntValue(int2State);
 
 const Value *Processor::int2Ket(const SourceContext &source, const Value *arg)
 {
-    Int2StateMapper mapper(source);
     try
     {
-        const Value *result = arg->map(mapper);
+        const Value *result = int2StateOper.apply(source, *arg);
         delete arg;
         return result;
     }

@@ -9,12 +9,19 @@
 
 namespace qc
 {
-    class ValueMapper;
+    enum class ValueType
+    {
+        intValueType,
+        complexValueType,
+        matrixValueType,
+        listValueType
+    };
 
     class Value
     {
     public:
-        virtual const Value *map(const ValueMapper &mapper) const = 0;
+        virtual const ValueType type(void) const = 0;
+
         virtual std::ostream &write(std::ostream &stream) const { return stream << "value"; }
     };
 
@@ -25,9 +32,9 @@ namespace qc
     public:
         IntValue(const int value) : _value(value) {}
 
-        const int value(void) const { return _value; }
+        virtual const ValueType type(void) const override { return ValueType::intValueType; };
 
-        virtual const Value *map(const ValueMapper &mapper) const override;
+        const int value(void) const { return _value; }
 
         virtual std::ostream &write(std::ostream &stream) const override { return stream << _value; }
     };
@@ -39,9 +46,9 @@ namespace qc
     public:
         ComplexValue(const std::complex<double> &value) : _value(value) {}
 
-        const std::complex<double> &value(void) const { return _value; }
+        virtual const ValueType type(void) const override { return ValueType::complexValueType; };
 
-        virtual const Value *map(const ValueMapper &mapper) const override;
+        const std::complex<double> &value(void) const { return _value; }
 
         virtual std::ostream &write(std::ostream &stream) const override { return stream << _value; }
     };
@@ -53,9 +60,9 @@ namespace qc
     public:
         MatrixValue(const mx::Matrix &value) : _value(value) {}
 
-        const mx::Matrix &value(void) const { return _value; }
+        virtual const ValueType type(void) const override { return ValueType::matrixValueType; };
 
-        virtual const Value *map(const ValueMapper &mapper) const override;
+        const mx::Matrix &value(void) const { return _value; }
 
         virtual std::ostream &write(std::ostream &stream) const override { return stream << _value; }
     };
@@ -68,20 +75,11 @@ namespace qc
         ListValue(const std::vector<const Value *> values) : _values(values) {}
         ~ListValue();
 
+        virtual const ValueType type(void) const override { return ValueType::listValueType; };
+
         const std::vector<const Value *> &values(void) const { return _values; }
 
-        virtual const Value *map(const ValueMapper &mapper) const override;
-
         virtual std::ostream &write(std::ostream &stream) const override;
-    };
-
-    class ValueMapper
-    {
-    public:
-        virtual const Value *map(const IntValue &value) const = 0;
-        virtual const Value *map(const ComplexValue &value) const = 0;
-        virtual const Value *map(const MatrixValue &value) const = 0;
-        virtual const Value *map(const ListValue &value) const = 0;
     };
 
 }

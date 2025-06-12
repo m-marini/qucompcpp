@@ -13,39 +13,11 @@ using namespace std;
 using namespace qc;
 using namespace mx;
 
-class MockValueMapper : public ValueMapper
-{
-public:
-    virtual const Value *map(const IntValue &value) const override
-    {
-        return new IntValue(value.value() * 2);
-    }
-    virtual const Value *map(const ComplexValue &value) const override
-    {
-        return new ComplexValue(value.value() * 2.0);
-    }
-    virtual const Value *map(const MatrixValue &value) const override
-    {
-        return new IntValue(value.value().numRows());
-    }
-    virtual const Value *map(const ListValue &value) const override
-    {
-        return new IntValue(value.values().size());
-    }
-};
-
 TEST(testProcessor, testIntValue)
 {
     const IntValue x(1);
     EXPECT_EQ(1, x.value());
     EXPECT_EQ("1", to_string(x));
-
-    MockValueMapper mapper;
-    const Value *mappedValue = x.map(MockValueMapper());
-
-    EXPECT_EQ(2, ((IntValue *)mappedValue)->value());
-
-    delete mappedValue;
 }
 
 TEST(testProcessor, testComplexValue)
@@ -53,13 +25,6 @@ TEST(testProcessor, testComplexValue)
     const ComplexValue x(1.1);
     EXPECT_EQ(complex(1.1), x.value());
     EXPECT_EQ("(1.1,0)", to_string(x));
-
-    MockValueMapper mapper;
-    const Value *mappedValue = x.map(MockValueMapper());
-
-    EXPECT_EQ(complex(2.2), ((ComplexValue *)mappedValue)->value());
-
-    delete mappedValue;
 }
 
 TEST(testProcessor, testMatrixValue)
@@ -67,13 +32,6 @@ TEST(testProcessor, testMatrixValue)
     const MatrixValue x(PLUS_KET);
     EXPECT_EQ(PLUS_KET.cells(), x.value().cells());
     EXPECT_EQ("(0.707107,0)\n(0.707107,0)", to_string(x));
-
-    MockValueMapper mapper;
-    const Value *mappedValue = x.map(MockValueMapper());
-
-    EXPECT_EQ(2, ((IntValue *)mappedValue)->value());
-
-    delete mappedValue;
 }
 
 TEST(testProcessor, testListValue)
@@ -81,13 +39,6 @@ TEST(testProcessor, testListValue)
     const ListValue x({new IntValue(2), new ComplexValue(1.1)});
     EXPECT_EQ("(2,(1.1,0))", to_string(x));
     EXPECT_EQ(2, x.values().size());
-
-    MockValueMapper mapper;
-    const Value *mappedValue = x.map(MockValueMapper());
-
-    EXPECT_EQ(2, ((IntValue *)mappedValue)->value());
-
-    delete mappedValue;
 }
 
 class ProcessorFixture : public testing::TestWithParam<std::pair<std::string, Value *>>
@@ -165,7 +116,7 @@ INSTANTIATE_TEST_SUITE_P(testProcessorError,
                          ProcessorErrorFixture,
                          testing::Values(
                              // Code, expected error
-                             pair<string, string>{"||+>>;", "Expected integer value: ((0.707107,0)\n(0.707107,0))"},
+                             pair<string, string>{"||+>>;", "Expected integer value: (0.707107,0)\n(0.707107,0)"},
                              pair<string, string>{"|1.0>;", "Expected integer value: (1,0)"}));
 
 INSTANTIATE_TEST_SUITE_P(testProcessor,

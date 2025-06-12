@@ -11,7 +11,10 @@ using namespace mx;
 
 ChainUnaryOperator::~ChainUnaryOperator()
 {
-    delete _other;
+    if (_other)
+    {
+        delete _other;
+    }
 }
 
 ChainUnaryOperator *ChainUnaryOperator::mapIntValue(const IntMapperFunction &mapper) const
@@ -53,4 +56,29 @@ const Value *UnaryMatrixOperator::apply(const SourceContext &context, const Valu
     return value.type() == ValueType::matrixValueType
                ? _mapper(context, ((const MatrixValue *)&value)->value())
                : _other->apply(context, value);
+}
+
+ChainBinaryOperator::~ChainBinaryOperator()
+{
+    if (_other)
+    {
+        delete _other;
+    }
+}
+
+ChainBinaryOperator *ChainBinaryOperator::mapMatrixMatrixValue(const MatrixMatrixMapperFunction &mapper) const
+{
+    return new MatrixMatrixOperator(mapper, this);
+}
+
+const Value *BinaryErrorOperator::apply(const SourceContext &context, const Value &left, const Value &right) const
+{
+    throw context.execException(_format + to_string(left) + ", " + to_string(right));
+}
+
+const Value *MatrixMatrixOperator::apply(const SourceContext &context, const Value &left, const Value &right) const
+{
+    return left.type() == ValueType::matrixValueType && right.type() == ValueType::matrixValueType
+               ? _mapper(context, ((const MatrixValue *)&left)->value(), ((const MatrixValue *)&right)->value())
+               : _other->apply(context, left, right);
 }

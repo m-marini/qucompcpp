@@ -76,6 +76,8 @@ namespace mx
          */
         const Matrix operator-(void) const;
 
+        const Matrix cross(const Matrix &a) const;
+
         /**
          * Return the transpose congiugate matrix
          */
@@ -110,8 +112,10 @@ namespace mx
     extern const Matrix MINUS_KET;
     extern const Matrix I_KET;
     extern const Matrix MINUS_I_KET;
+
 }
 
 extern std::ostream &operator<<(std::ostream &stream, const mx::Matrix &a);
+extern const std::string to_string(const mx::Matrix &a);
 
 #endif

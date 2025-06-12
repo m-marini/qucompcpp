@@ -128,18 +128,19 @@ static const Matrix KET0(2, 1, {1, 0});
 static const Matrix KET3(4, 1, {0, 0, 0, 1});
 static const Matrix I0(2, 2, {1, 0, 0, 1});
 static const Matrix X0(2, 2, {1, 0, 1, 0});
+static const Matrix X00(4, 1, {1, 0, 0, 0});
+
 static const Matrix X1(4, 4,
-     {
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 0, 1,
-    1, 0, 1, 0
-});
+                       {1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 0, 1,
+                        1, 0, 1, 0});
 
 INSTANTIATE_TEST_SUITE_P(testProcessor,
                          ProcessorFixture,
                          testing::Values(
                              // Code, expected result
+                             pair<string, Value *>{"|0> x |0>;", new ListValue({new MatrixValue(X00)})},
                              pair<string, Value *>{"X(1);", new ListValue({new MatrixValue(X1)})},
                              pair<string, Value *>{"X(0);", new ListValue({new MatrixValue(X0)})},
                              pair<string, Value *>{"I(0);", new ListValue({new MatrixValue(I0)})},

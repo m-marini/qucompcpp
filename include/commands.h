@@ -219,7 +219,15 @@ namespace qc
         {
             add(left).add(right);
         }
+
         virtual std::ostream &write(std::ostream &stream) const override;
+
+        virtual const Value *eval(ProcessContext &context) const override
+        {
+            const Value *left = _commands.at(0)->eval(context);
+            const Value *right = _commands.at(1)->eval(context);
+            return context.cross(source(), left, right);
+        }
     };
 
     class MultiplyCommand : public CompositeCommand

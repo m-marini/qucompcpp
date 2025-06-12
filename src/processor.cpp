@@ -72,7 +72,6 @@ const static FunctionMapper iMapper = [](const SourceContext &context, const Lis
     return iOper.apply(context, *args.values().at(0));
 };
 
-
 // -------- X
 
 static const Value *intX(const SourceContext &context, const int arg)
@@ -229,6 +228,31 @@ const Value *Processor::callFunction(const SourceContext &source, const string &
     catch (QuExecException ex)
     {
         delete args;
+        throw;
+    }
+}
+
+static const Value *crossMapper(const SourceContext &source, const Matrix &left, const Matrix &right)
+{
+    return new MatrixValue(left.cross(right));
+};
+
+static ChainBinaryOperator &crossOp = *(new BinaryErrorOperator("Expected matrix x matrix, actual: "))
+                                           ->mapMatrixMatrixValue(crossMapper);
+
+const Value *Processor::cross(const SourceContext &source, const Value *left, const Value *right)
+{
+    try
+    {
+        const Value *result = crossOp.apply(source, *left, *right);
+        delete left;
+        delete right;
+        return result;
+    }
+    catch (QuExecException ex)
+    {
+        delete left;
+        delete right;
         throw;
     }
 }

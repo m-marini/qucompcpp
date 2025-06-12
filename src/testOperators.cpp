@@ -9,7 +9,7 @@ using namespace std;
 using namespace qc;
 using namespace mx;
 
-TEST(testOperators, testError)
+TEST(testOperators, testUnaryError)
 {
     UnaryErrorOperator mapper("Unexpected value: ");
     const SourceContext context("1", "1", 1, 0);
@@ -166,4 +166,42 @@ TEST(testOperators, testMatrixChain)
             throw;
          } }, QuExecException);
     delete mapper;
+}
+
+TEST(testOperators, testBinaryError)
+{
+    BinaryErrorOperator mapper("Unexpected values: ");
+    const SourceContext context("1", "1", 1, 0);
+    EXPECT_THROW({ 
+        try
+         {
+        mapper.apply(context, IntValue(1), IntValue(2));
+         } catch (QuExecException ex){
+            EXPECT_STREQ("Unexpected values: 1, 2", ex.what());
+            throw;
+         } }, QuExecException);
+}
+
+TEST(testOperators, testBinaryMatrixMatrix)
+{
+    MatrixMatrixMapperFunction f = [](const SourceContext &context, const Matrix &left, const Matrix &right)
+    {
+        return new MatrixValue(PLUS_KET);
+    };
+    ChainBinaryOperator *op = (new BinaryErrorOperator("Unexpected values: "))
+                                  ->mapMatrixMatrixValue(f);
+    const SourceContext context("1", "1", 1, 0);
+    const Value *value = op->apply(context, MatrixValue(I_KET), MatrixValue(I_KET));
+    EXPECT_EQ(ValueType::matrixValueType, value->type());
+    EXPECT_EQ(to_string(PLUS_KET), to_string(((const MatrixValue *)value)->value()));
+
+    EXPECT_THROW({ 
+        try
+         {
+        op->apply(context, IntValue(1), IntValue(2));
+         } catch (QuExecException ex){
+            EXPECT_STREQ("Unexpected values: 1, 2", ex.what());
+            throw;
+         } }, QuExecException);
+    delete op;
 }

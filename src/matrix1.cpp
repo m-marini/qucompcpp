@@ -279,3 +279,31 @@ static const indices_t inversePermutation(indices_t s)
     }
     return reverse;
 }
+
+const Matrix Matrix::cross(const Matrix &right) const
+{
+    int rows = _numRows * right._numRows;
+    int cols = _numCols * right._numCols;
+    ComplexVect cells;
+    for (size_t i = 0; i < _numRows; i++)
+    {
+        for (size_t j = 0; j < right._numRows; j++)
+        {
+            for (size_t k = 0; k < _numCols; k++)
+            {
+                for (size_t l = 0; l < right._numCols; l++)
+                {
+                        cells.push_back(at(i, k)*right.at(j, l));
+                }
+            }
+        }
+    }
+    return Matrix(rows, cols, cells);
+}
+
+const string to_string(const Matrix &a)
+{
+    stringstream stream;
+    stream << a;
+    return stream.str();
+}

@@ -53,3 +53,23 @@ TEST(testMatrix, copy)
                                        1.0, 1.0}),
               c.cells());
 }
+
+TEST(testMatrix, cross)
+{
+    Matrix a(2, 2,
+             {1, 2,
+              3, 4});
+    Matrix b(2, 2,
+             {2, 3,
+              4, 5});
+    Matrix exp(4, 4,
+               {2, 3, 4, 6,
+                4, 5, 8, 10,
+                6, 9, 8, 12,
+                12, 15, 16, 20});
+    Matrix c = a.cross(b);
+
+    EXPECT_EQ(4, c.numCols());
+    EXPECT_EQ(4, c.numRows());
+    EXPECT_EQ(to_string(exp), to_string(c));
+}

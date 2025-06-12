@@ -16,6 +16,8 @@ namespace qc
     typedef std::function<const Value *(const SourceContext &, const mx::Matrix &)> MatrixMapperFunction;
     typedef std::function<const Value *(const SourceContext &, const std::vector<Value *> &)> ListMapperFunction;
 
+    typedef std::function<const Value *(const SourceContext &, const mx::Matrix &, const mx::Matrix &)> MatrixMatrixMapperFunction;
+
     class UnaryOperator
     {
     public:
@@ -28,7 +30,7 @@ namespace qc
         const UnaryOperator *_other;
 
     public:
-        ChainUnaryOperator(void) {}
+        ChainUnaryOperator(void) : _other(NULL) {}
         ChainUnaryOperator(const UnaryOperator *other) : _other(other) {}
 
         ~ChainUnaryOperator();
@@ -76,9 +78,50 @@ namespace qc
 
     public:
         UnaryMatrixOperator(const MatrixMapperFunction &mapper,
-                             const UnaryOperator *other) : ChainUnaryOperator(other), _mapper(mapper) {}
+                            const UnaryOperator *other) : ChainUnaryOperator(other), _mapper(mapper) {}
 
         virtual const Value *apply(const SourceContext &context, const Value &value) const override;
+    };
+
+    class BinaryOperator
+    {
+    public:
+        virtual const Value *apply(const SourceContext &context, const Value &left, const Value &right) const = 0;
+    };
+
+    class ChainBinaryOperator : public BinaryOperator
+    {
+    protected:
+        const BinaryOperator *_other;
+
+    public:
+        ChainBinaryOperator(void) : _other(NULL) {}
+        ChainBinaryOperator(const BinaryOperator *other) : _other(other) {}
+
+        ~ChainBinaryOperator();
+
+        ChainBinaryOperator *mapMatrixMatrixValue(const MatrixMatrixMapperFunction &mapper) const;
+    };
+
+    class BinaryErrorOperator : public ChainBinaryOperator
+    {
+        std::string _format;
+
+    public:
+        BinaryErrorOperator(const std::string &format) : _format(format) {}
+
+        virtual const Value *apply(const SourceContext &context, const Value &left, const Value &right) const override;
+    };
+
+    class MatrixMatrixOperator : public ChainBinaryOperator
+    {
+        MatrixMatrixMapperFunction _mapper;
+
+    public:
+        MatrixMatrixOperator(const MatrixMatrixMapperFunction &mapper, const BinaryOperator *other)
+            : ChainBinaryOperator(other), _mapper(mapper) {}
+
+        virtual const Value *apply(const SourceContext &context, const Value &left, const Value &right) const override;
     };
 }
 #endif

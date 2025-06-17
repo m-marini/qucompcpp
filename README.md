@@ -33,36 +33,51 @@ The `qucomp` executable load the quantum circuit and print the output state with
 ```
 $ ./qucomp -h
 
-Quantum computing 0.2.1
+Quantum computing 0.3.0
 
 Usage: ./qucomp [options]
 
 Options
-  -f --file <file>        Load gates from file
-  -g --gates <gates_list> Define the gate list
+  -d --dump               Specify variable dump
+  -f --file <file>        Specify qu source file
   -h --help               Print usage
   -v --version            Print version
-
-The stdin is used to load the gates if no file nor gates are defined.
 ```
 
 ```
-$ ./qucomp -f ../qucomp.qg 
-Gates:
-  cnot(1, 0)
-  ccnot(3, 1, 2)
-  cnot(2, 1)
-  cnot(1, 0)
-Building ...
+$ ./qucomp -f ../qucomp.qu
 Processing ...
-Result:
-  (1,0) |0> + (0,0) |1> + (0,0) |2> + (0,0) |3> + (0,0) |4> + (0,0) |5> + (0,0) |6> + (0,0) |7>
-+ (0,0) |8> + (0,0) |9> + (0,0) |10> + (0,0) |11> + (0,0) |12> + (0,0) |13> + (0,0) |14> + (0,0) |15>
-
-  P(qubit 0)=0
-  P(qubit 1)=0
-  P(qubit 2)=0
-  P(qubit 3)=0
+13:clear();
+  :^ value: 0
+15:let in0 = |0>;
+  :----^ value: |0>
+16:let in1 = |0>;
+  :----^ value: |0>
+18:let in = (in1 x in0);
+  :----^ value: |0>
+19:let ha = CNOT(1,0) * CNOT(2,1) * CCNOT(3,1,2) * CNOT(1,0) * CCNOT(3,0,1);
+  :----^ value: [ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0
+  0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 ]
+20:let out = ha * in;
+  :----^ value: |0>
+22:let sum = out^ . qubit1(2,4) . out;
+  :----^ value: 0
+23:let carry = out^ . qubit1(3,4) . out;
+  :----^ value: 0
 ```
 
 ## Release 0.2.1

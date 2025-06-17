@@ -6,14 +6,17 @@
 
 namespace vu
 {
-    typedef std::vector<std::complex<float>> ComplexVect;
+    typedef std::vector<std::complex<double>> ComplexVect;
 
     extern const ComplexVect operator-(const ComplexVect &a);
     extern const ComplexVect operator+(const ComplexVect &a, const ComplexVect &b);
     extern const ComplexVect operator-(const ComplexVect &a, const ComplexVect &b);
     extern const ComplexVect operator*(const ComplexVect &a, const ComplexVect &b);
-    extern const ComplexVect operator*(const std::complex<float> &a, const ComplexVect &b);
+    extern const ComplexVect operator*(const std::complex<double> &a, const ComplexVect &b);
+    extern const ComplexVect operator/(const ComplexVect &a, const std::complex<double> &b);
     extern const ComplexVect conj(const ComplexVect &a);
+    extern const ComplexVect operator-(const ComplexVect &a);
+    extern const size_t numBitsByState(const size_t state);
 
     /**
      * Partial matrix multiplication

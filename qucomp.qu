@@ -10,7 +10,14 @@
  * In 3 ---X-------X----------- Out 1 Carry
  */
 
-cnot(1,0)
-ccnot(3,1,2)
-cnot(2,1)
-cnot(1,0)
+clear();
+
+let in0 = |0>;
+let in1 = |0>;
+
+let in = (in1 x in0);
+let ha = CNOT(1,0) * CNOT(2,1) * CCNOT(3,1,2) * CNOT(1,0) * CCNOT(3,0,1);
+let out = ha * in;
+
+let sum = out^ . qubit1(2,4) . out;
+let carry = out^ . qubit1(3,4) . out;

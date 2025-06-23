@@ -80,6 +80,10 @@ Processing ...
   :----^ value: 0
 ```
 
+## Release 0.3.0
+
+- Added qu language
+
 ## Release 0.2.1
 
 - Comment syntax

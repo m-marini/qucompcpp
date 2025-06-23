@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.0] 2025-05-16
+
 ### Added
 
 - Issue [#7](https://github.com/m-marini/qucompcpp/issues/7): Add qu language
